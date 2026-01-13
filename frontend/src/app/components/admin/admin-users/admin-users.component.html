@@ -1,0 +1,38 @@
+<div class="page-container">
+    <h1>Users Management</h1>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td>
+                        <div class="user-info">
+                            <div class="avatar user-avatar">{{ user.name.charAt(0) }}</div>
+                            <span>{{ user.name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.plan?.name || 'Free' }}</td>
+                    <td>{{ user.createdAt | date }}</td>
+                    <td>
+                        <!-- View Profile could go to same detail component logic or separate -->
+                        <span class="text-muted">No actions</span>
+                    </td>
+                </tr>
+                <tr *ngIf="users.length === 0 && !loading">
+                    <td colspan="5" class="empty-state">No users found.</td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="loading" class="loading">Loading users...</div>
+    </div>
+</div>

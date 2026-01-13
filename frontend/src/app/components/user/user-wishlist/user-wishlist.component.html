@@ -1,0 +1,45 @@
+<div class="page-container" *ngIf="!loading">
+    <div class="header">
+        <h1>Saved Properties</h1>
+        <p>Your personal collection of favorites.</p>
+    </div>
+
+    <div class="wishlist-grid" *ngIf="properties.length > 0">
+        <div class="property-card" *ngFor="let prop of properties" [routerLink]="['/properties', prop._id]">
+            <div class="img-wrapper">
+                <img [src]="prop.imageUrl || 'https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image'"
+                    alt="{{ prop.title }}" class="thumb">
+                <div class="status-badge" [class.active]="prop.status === 'Active'"
+                    [class.sold]="prop.status === 'Sold'">{{ prop.status }}</div>
+            </div>
+
+            <div class="content">
+                <div class="top-row">
+                    <span class="category">{{ prop.category || 'Property' }}</span>
+                    <span class="price">{{ prop.price | currency:'USD':'symbol':'1.0-0' }}</span>
+                </div>
+
+                <h3>{{ prop.title }}</h3>
+                <p class="location"><i class="fas fa-map-marker-alt"></i> {{ prop.location }}</p>
+
+                <div class="actions" (click)="$event.stopPropagation()">
+                    <button class="btn-remove" (click)="removeProperty(prop._id)">
+                        <span class="icon"><i class="fas fa-heart-broken"></i></span> Remove
+                    </button>
+                    <a [routerLink]="['/properties', prop._id]" class="btn-view">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" *ngIf="properties.length === 0">
+        <div class="icon-circle">
+            <i class="far fa-heart"></i>
+        </div>
+        <h3>No saved properties yet</h3>
+        <p>Start browsing and save properties you love!</p>
+        <a routerLink="/properties" class="btn-primary">Browse Properties</a>
+    </div>
+</div>

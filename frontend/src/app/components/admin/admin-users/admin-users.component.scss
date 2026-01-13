@@ -1,0 +1,121 @@
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-container {
+    padding: 2rem;
+    animation: fadeUp 0.6s ease-out;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+h1 {
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.table-container {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 1.25rem 1.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    th {
+        background: var(--background-color);
+        color: var(--text-light);
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    tr {
+        transition: all 0.2s;
+
+        &:hover {
+            background-color: var(--background-color);
+        }
+
+        &:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+    }
+
+    td {
+        color: var(--text-main);
+        font-size: 1rem;
+    }
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    span {
+        font-weight: 500;
+        color: var(--text-main);
+    }
+}
+
+.user-avatar {
+    background: #10b981;
+    /* Legacy fallback or specific override if needed */
+}
+
+.loading {
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.text-muted {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}

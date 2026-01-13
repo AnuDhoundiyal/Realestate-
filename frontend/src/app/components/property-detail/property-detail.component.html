@@ -1,0 +1,134 @@
+<div class="container page-content" *ngIf="property; else loading">
+
+    <!-- Premium Header -->
+    <div class="detail-header">
+        <div class="title-section">
+            <h1>{{ property.title }}</h1>
+            <p class="location">
+                <i class="fas fa-map-marker-alt"></i> {{ property.location }} • Listed on {{ property.createdAt |
+                date:'mediumDate' }}
+            </p>
+        </div>
+        <div class="price-tag">
+            <span class="status-badge">{{ property.status || 'Active' }}</span>
+            <div class="price-row">
+                <span class="price">{{ property.price | currency:'USD':'symbol':'1.0-0' }}</span>
+                <button class="btn-heart" (click)="toggleSave()" [class.saved]="isSaved" title="Save Property">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Gallery -->
+    <div class="gallery-section">
+        <div class="main-view">
+            <a [href]="activeImage" data-fancybox="gallery" [attr.data-caption]="property.title">
+                <img [src]="activeImage" [alt]="property.title" class="main-image">
+                <div class="overlay">
+                    <span><i class="fas fa-expand"></i> View Full Gallery</span>
+                </div>
+            </a>
+        </div>
+        <div class="thumbnails" *ngIf="property.images && property.images.length">
+            <!-- Hidden links for Fancybox -->
+            <a *ngFor="let img of property.images" [href]="img" data-fancybox="gallery"
+                [attr.data-caption]="property.title" style="display: none;"></a>
+
+            <img [src]="property.imageUrl" [class.active]="activeImage === property.imageUrl"
+                (click)="setActiveImage(property.imageUrl)" alt="Main">
+
+            <img *ngFor="let img of property.images" [src]="img" [class.active]="activeImage === img"
+                (click)="setActiveImage(img)" alt="Gallery image">
+        </div>
+    </div>
+
+    <div class="details-grid">
+        <!-- Main Content -->
+        <div class="main-info">
+
+            <!-- Specs Cards -->
+            <div class="specs-bar">
+                <div class="spec-card">
+                    <span class="icon"><i class="fas fa-bed"></i></span>
+                    <strong>{{ property.bedrooms }}</strong>
+                    <span>Bedrooms</span>
+                </div>
+                <div class="spec-card">
+                    <span class="icon"><i class="fas fa-bath"></i></span>
+                    <strong>{{ property.bathrooms }}</strong>
+                    <span>Bathrooms</span>
+                </div>
+                <div class="spec-card">
+                    <span class="icon"><i class="fas fa-ruler-combined"></i></span>
+                    <strong>{{ property.area }}</strong>
+                    <span>Sq Ft</span>
+                </div>
+                <div class="spec-card">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <strong>{{ property.type }}</strong>
+                    <span>Type</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>About this property</h2>
+                <div class="desc-text">
+                    {{ property.description }}
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Features & Amenities</h2>
+                <ul class="features-list">
+                    <li *ngFor="let feature of property.features">
+                        <i class="fas fa-check-circle"></i> {{ feature }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar: Agent Information -->
+        <div class="sidebar">
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        {{ property.owner?.name?.charAt(0) || 'A' }}
+                    </div>
+                    <span class="label">Listed by</span>
+                    <h3>{{ property.owner?.name || 'Unknown Agent' }}</h3>
+                    <div class="verified-badge" *ngIf="property.owner?.role === 'agent'">
+                        <i class="fas fa-certificate"></i> Verified Agent
+                    </div>
+                </div>
+
+                <div class="contact-info">
+                    <div class="info-item" *ngIf="property.owner?.phone">
+                        <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
+                        <span>{{ property.owner.phone }}</span>
+                    </div>
+                    <div class="info-item" *ngIf="property.owner?.email">
+                        <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                        <span>{{ property.owner.email }}</span>
+                    </div>
+                </div>
+
+                <div class="contact-actions">
+                    <button class="btn-primary" (click)="contactAgent()" [disabled]="!authService.isAuthenticated()">
+                        <i class="fas fa-comment-alt"></i> Chat with Agent
+                    </button>
+                    <p class="note" *ngIf="!authService.isAuthenticated()">
+                        <a routerLink="/login" style="color: var(--primary-color);">Log in</a> to contact agent
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="container page-content loading-state">
+        <div class="spinner"></div>
+        <p>Loading property details...</p>
+    </div>
+</ng-template>

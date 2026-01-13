@@ -1,0 +1,74 @@
+<div class="chat-container">
+    <div class="sidebar">
+        <div class="header">
+            <h3><i class="fas fa-comments"></i> My Chats</h3>
+        </div>
+        <div class="user-list">
+            <div *ngFor="let chat of conversations" class="user-item" [class.active]="selectedChat?._id === chat._id"
+                (click)="selectChat(chat)">
+                <div class="avatar">{{ chat.otherUser.name.charAt(0) | uppercase }}</div>
+                <div class="info">
+                    <span class="name">{{ chat.otherUser.name }}</span>
+                    <span class="last-msg" *ngIf="chat.lastMessage">{{ chat.lastMessage.content | slice:0:30
+                        }}...</span>
+                    <!-- Optional: Time of last message could be added here -->
+                </div>
+                <!-- Optional: Unread indicator if backend supports it -->
+            </div>
+
+            <div *ngIf="conversations.length === 0 && !loading" class="no-selection">
+                <i class="far fa-comment-dots"></i>
+                <p>No conversations yet.</p>
+            </div>
+
+            <div *ngIf="loading && conversations.length === 0" class="no-selection">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading chats...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-area">
+        <div class="chat-header" *ngIf="selectedChat">
+            <h3>{{ selectedChat.otherUser.name }}</h3>
+            <span class="role-badge">{{ selectedChat.otherUser.role }}</span>
+        </div>
+
+        <div class="chat-messages" id="chat-messages" *ngIf="selectedChat">
+            <div *ngFor="let msg of messages" class="message" [class.sent]="msg.sender._id === currentUserId"
+                [class.received]="msg.sender._id !== currentUserId" [class.system]="msg.isSystemMessage">
+
+                <div class="bubble" *ngIf="!msg.isSystemMessage">
+                    {{ msg.content }}
+                </div>
+
+                <!-- System Message Style -->
+                <div class="system-bubble" *ngIf="msg.isSystemMessage">
+                    <i class="fas fa-info-circle"></i> {{ msg.content }}
+                    <div *ngIf="msg.metadata?.propertyTitle" class="property-link">
+                        Property: <strong>{{ msg.metadata.propertyTitle }}</strong>
+                    </div>
+                </div>
+
+                <span class="time">{{ msg.createdAt | date:'shortTime' }}</span>
+            </div>
+
+            <div *ngIf="messages.length === 0" class="no-selection">
+                <i class="far fa-paper-plane"></i>
+                <p>Start the conversation!</p>
+            </div>
+        </div>
+
+        <div class="input-area" *ngIf="selectedChat">
+            <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type your message...">
+            <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+        </div>
+
+        <div class="no-selection" *ngIf="!selectedChat">
+            <i class="far fa-comments"></i>
+            <p>Select a chat to view messages</p>
+        </div>
+    </div>
+</div>

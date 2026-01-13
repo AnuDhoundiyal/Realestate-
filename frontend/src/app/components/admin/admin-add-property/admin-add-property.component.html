@@ -1,0 +1,166 @@
+<div class="page-container">
+    <h1>Add New Property (Admin)</h1>
+
+    <div class="form-container">
+        <form #propForm="ngForm" (ngSubmit)="submit(propForm)">
+
+            <!-- 1. Image Section (At the Top) -->
+            <div class="section image-section">
+                <h3>Property Media</h3>
+                <div class="tabs">
+                    <button type="button" [class.active]="imageMode === 'upload'" (click)="imageMode = 'upload'">Upload
+                        Photos</button>
+                    <button type="button" [class.active]="imageMode === 'url'" (click)="imageMode = 'url'">Image
+                        URLs</button>
+                </div>
+
+                <!-- Upload Mode -->
+                <div class="tab-content" *ngIf="imageMode === 'upload'">
+                    <div class="form-group">
+                        <label>Main Image *</label>
+                        <div class="upload-box"
+                            [class.invalid]="!selectedFile && !property.imageUrl && propForm.submitted">
+                            <input type="file" (change)="onFileSelected($event)" accept="image/*">
+                            <p *ngIf="!previewUrl">Click to browse or drag main image here</p>
+                            <img *ngIf="previewUrl" [src]="previewUrl" class="preview-img">
+                        </div>
+                        <div *ngIf="!selectedFile && propForm.submitted" class="error-text">Main image is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gallery Images (Select Multiple)</label>
+                        <div class="upload-box">
+                            <input type="file" (change)="onGallerySelected($event)" accept="image/*" multiple>
+                            <p *ngIf="galleryPreviews.length === 0">Click to browse multiple images</p>
+                            <div class="gallery-grid" *ngIf="galleryPreviews.length > 0">
+                                <img *ngFor="let preview of galleryPreviews" [src]="preview" class="thumb-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- URL Mode -->
+                <div class="tab-content" *ngIf="imageMode === 'url'">
+                    <div class="form-group">
+                        <label>Main Image URL *</label>
+                        <input [(ngModel)]="property.imageUrl" name="imageUrl" class="form-control"
+                            placeholder="https://example.com/main.jpg">
+                        <img *ngIf="property.imageUrl" [src]="property.imageUrl" class="preview-img mt-2">
+                    </div>
+                    <div class="form-group">
+                        <label>Gallery URLs (Comma separated)</label>
+                        <textarea [(ngModel)]="property.galleryUrls" name="galleryUrls" class="form-control"
+                            placeholder="https://example.com/1.jpg, https://example.com/2.jpg"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Basic Info -->
+            <div class="section">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input [(ngModel)]="property.title" name="title" required #title="ngModel" class="form-control"
+                        [class.is-invalid]="title.invalid && (title.dirty || propForm.submitted)">
+                    <div *ngIf="title.invalid && (title.dirty || propForm.submitted)" class="error-text">Title is
+                        required</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea [(ngModel)]="property.description" name="description" required #desc="ngModel"
+                        class="form-control"
+                        [class.is-invalid]="desc.invalid && (desc.dirty || propForm.submitted)"></textarea>
+                    <div *ngIf="desc.invalid && (desc.dirty || propForm.submitted)" class="error-text">Description is
+                        required</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="number" [(ngModel)]="property.price" name="price" required #price="ngModel"
+                            class="form-control"
+                            [class.is-invalid]="price.invalid && (price.dirty || propForm.submitted)">
+                        <div *ngIf="price.invalid && (price.dirty || propForm.submitted)" class="error-text">Price is
+                            required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type (Sale/Rent)</label>
+                        <select [(ngModel)]="property.type" name="type" class="form-control">
+                            <option value="Sale">For Sale</option>
+                            <option value="Rent">For Rent</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Location & Category -->
+            <div class="section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Location *</label>
+                        <input list="locations" [(ngModel)]="property.location" name="location" class="form-control"
+                            placeholder="Select or type new..." required #loc="ngModel"
+                            [class.is-invalid]="loc.invalid && (loc.dirty || propForm.submitted)">
+                        <datalist id="locations">
+                            <option *ngFor="let loc of locations" [value]="loc">
+                        </datalist>
+                        <div *ngIf="loc.invalid && (loc.dirty || propForm.submitted)" class="error-text">Location is
+                            required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <input list="categories" [(ngModel)]="property.category" name="category" class="form-control"
+                            placeholder="Select or type new..." required #cat="ngModel"
+                            [class.is-invalid]="cat.invalid && (cat.dirty || propForm.submitted)">
+                        <datalist id="categories">
+                            <option *ngFor="let cat of categories" [value]="cat">
+                        </datalist>
+                        <div *ngIf="cat.invalid && (cat.dirty || propForm.submitted)" class="error-text">Category is
+                            required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Features -->
+            <div class="section">
+                <label>Features</label>
+                <div class="features-grid">
+                    <label *ngFor="let feat of commonFeatures" class="checkbox-box">
+                        <input type="checkbox" [(ngModel)]="selectedCommonFeatures[feat]" [name]="'feat_' + feat">
+                        {{ feat }}
+                    </label>
+                </div>
+                <div class="form-group mt-2">
+                    <label>Additional Features (Comma separated)</label>
+                    <input [(ngModel)]="additionalFeatures" name="additionalFeatures" class="form-control"
+                        placeholder="e.g. Fireplace, Sea View">
+                </div>
+            </div>
+
+            <!-- 5. Specs -->
+            <div class="section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" [(ngModel)]="property.bedrooms" name="bedrooms" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" [(ngModel)]="property.bathrooms" name="bathrooms" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Area (sq ft)</label>
+                        <input type="number" [(ngModel)]="property.area" name="area" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="button" class="btn btn-secondary" routerLink="/admin/properties">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Property</button>
+            </div>
+        </form>
+    </div>
+</div>

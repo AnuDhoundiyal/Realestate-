@@ -1,0 +1,43 @@
+<div class="page-container">
+    <h1>Agents Management</h1>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Plan</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let agent of agents">
+                    <td>
+                        <div class="user-info">
+                            <div class="avatar">{{ agent.name.charAt(0) }}</div>
+                            <span>{{ agent.name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ agent.email }}</td>
+                    <td>
+                        <span class="badge" [class.verified]="agent.verificationStatus === 'VERIFIED'"
+                            [class.pending]="agent.verificationStatus === 'PENDING'"
+                            [class.rejected]="agent.verificationStatus === 'REJECTED'">
+                            {{ agent.verificationStatus }}
+                        </span>
+                    </td>
+                    <td>{{ agent.plan?.name || 'None' }}</td>
+                    <td>
+                        <a [routerLink]="['/admin/agents', agent._id]" class="btn-view">View Details</a>
+                    </td>
+                </tr>
+                <tr *ngIf="agents.length === 0 && !loading">
+                    <td colspan="5" class="empty-state">No agents found.</td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="loading" class="loading">Loading agents...</div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="page-container" *ngIf="!loading && plan">
+    <div class="header">
+        <h1>My Subscription</h1>
+        <p>Manage your account plan and features.</p>
+    </div>
+
+    <div class="plan-layout">
+        <!-- Main Plan Card -->
+        <div class="current-plan-card" [class.premium]="plan.price > 0">
+            <div class="ribbon" *ngIf="plan.price > 0">PREMIUM</div>
+
+            <div class="card-content">
+                <div class="plan-header">
+                    <div class="title-row">
+                        <span class="status-badge" [class.active]="plan.status === 'ACTIVE'">{{ plan.status }}</span>
+                        <h2>{{ plan.name }}</h2>
+                    </div>
+                    <div class="price-box">
+                        <span class="currency" *ngIf="plan.price > 0">$</span>
+                        <span class="amount">{{ plan.price }}</span>
+                        <span class="period">/mo</span>
+                    </div>
+                    <p class="plan-desc">
+                        {{ plan.price > 0 ? 'Everything you need for serious house hunting.' : 'Basic access to start
+                        your journey.' }}
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Usage / Limits (Mockup if not available in data) -->
+                <div class="usage-section">
+                    <div class="usage-item">
+                        <div class="usage-label">
+                            <span>Saved Properties</span>
+                            <span class="limit">Unlimited</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="fill" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="features-grid">
+                    <h3>Included in Plan</h3>
+                    <ul>
+                        <li *ngFor="let feature of plan.features">
+                            <i class="fas fa-check-circle"></i> {{ feature }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button class="btn-upgrade" (click)="upgradePlan()">
+                    {{ plan.price > 0 ? 'Change Plan' : 'Upgrade to Premium' }}
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <button *ngIf="plan.price > 0 && plan.status === 'ACTIVE'" class="btn-cancel"
+                    (click)="cancelSubscription()">
+                    Cancel Subscription
+                </button>
+            </div>
+        </div>
+
+        <!-- Banner / Sidebar Info -->
+        <div class="info-sidebar">
+            <div class="info-car success">
+                <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
+                <h4>Secure Payments</h4>
+                <p>All transactions are secured with 256-bit encryption.</p>
+            </div>
+
+            <div class="info-car info">
+                <div class="icon-box"><i class="fas fa-headset"></i></div>
+                <h4>Priority Support</h4>
+                <p>Premium members get priority email support.</p>
+            </div>
+        </div>
+    </div>
+</div>

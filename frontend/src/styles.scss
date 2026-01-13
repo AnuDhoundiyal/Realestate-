@@ -1,0 +1,174 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+:root {
+  /* Static variables */
+  --primary-color: #2563eb;
+  --primary-dark: #1e40af;
+  --secondary-color: #fca5a5;
+  --accent-color: #10b981;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+}
+
+:root[data-theme="dark"] {
+  /* Global Colors */
+  --background-color: #0D0D0D;
+  /* Matching footer bg for seamless look */
+  --text-main: #EDEDED;
+  --text-light: #A7A7A7;
+  --white: #1A1A1A;
+  /* Dark card background matched to inputs */
+  --border-color: rgba(255, 255, 255, 0.08);
+
+  --primary-color: #D7C29E;
+  /* Premium Gold */
+  --primary-dark: #C6A873;
+  --accent-color: #D7C29E;
+
+  /* Footer Theme */
+  --footer-bg: #0D0D0D;
+  --footer-heading: #FFFFFF;
+  --footer-text: #EDEDED;
+  --footer-muted: #A7A7A7;
+  --footer-border: rgba(255, 255, 255, 0.08);
+  --footer-input-bg: #1A1A1A;
+  --footer-input-border: #2A2A2A;
+  --footer-accent: #D7C29E;
+  --footer-icon-bg: #1F1F1F;
+  --footer-top-band: #1A1A1A;
+}
+
+:root[data-theme="light"] {
+  /* Global Colors */
+  --background-color: #F7F4EF;
+  /* Warm beige */
+  --text-main: #1E1E1E;
+  --text-light: #5A5A5A;
+  --white: #ffffff;
+  --border-color: #E6E1D8;
+
+  --primary-color: #C6A873;
+  /* Warm Gold */
+  --primary-dark: #A68B5B;
+  --accent-color: #C6A873;
+
+  /* Footer Theme */
+  --footer-bg: #F7F4EF;
+  --footer-heading: #1E1E1E;
+  --footer-text: #5A5A5A;
+  --footer-muted: #8C8C8C;
+  --footer-border: #E6E1D8;
+  --footer-input-bg: #FFFFFF;
+  --footer-input-border: #D7D2C8;
+  --footer-accent: #C6A873;
+  --footer-icon-bg: #EFE8DC;
+  --footer-top-band: #EAE3DA;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-main);
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Utilities */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  border: none;
+  transition: all 0.3s ease;
+
+  &.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+
+    &:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.btn-outline {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+
+    &:hover {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+  }
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--text-main);
+
+  span {
+    color: var(--primary-color);
+  }
+}

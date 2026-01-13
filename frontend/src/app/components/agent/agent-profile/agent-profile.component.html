@@ -1,0 +1,82 @@
+<div class="page-container">
+    <div class="header-section">
+        <h1>My Profile</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading profile...</div>
+
+    <div *ngIf="!loading && user" class="profile-layout">
+
+        <!-- Left Column: Identity -->
+        <div class="identity-card">
+            <div class="avatar-wrapper">
+                <div class="avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+            </div>
+
+            <h2>{{ user.name }}</h2>
+            <p class="email">{{ user.email }}</p>
+
+            <div class="badges">
+                <span class="badge role">{{ user.role }}</span>
+                <span class="badge" [class.verified]="user.verificationStatus === 'VERIFIED'"
+                    [class.pending]="user.verificationStatus === 'PENDING'">
+                    {{ user.verificationStatus }}
+                </span>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <span class="val">{{ user.properties?.length || 0 }}</span>
+                    <span class="lbl">Listings</span>
+                </div>
+                <div class="stat">
+                    <span class="val">{{ user.createdAt | date:'MMM yyyy' }}</span>
+                    <span class="lbl">Joined</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Details & Edit -->
+        <div class="content-area">
+
+            <!-- Plan Info Mini Card -->
+            <div class="section-card plan-mini">
+                <div class="plan-info">
+                    <h4>Current Plan</h4>
+                    <p>{{ user.plan?.name || 'Free Tier' }}</p>
+                </div>
+                <div class="plan-action">
+                    <a routerLink="/agent/plan" class="btn-text">View Plan Details →</a>
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="section-card">
+                <h3>Personal Information</h3>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input [(ngModel)]="user.name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input [(ngModel)]="user.phone" class="form-control" placeholder="e.g. +1 234 567 890">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input [value]="user.email" class="form-control" disabled title="Email cannot be changed">
+                </div>
+
+                <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
+
+                <div style="text-align: right; margin-top: 1rem;">
+                    <button (click)="updateProfile()" class="btn-primary">Save Changes</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

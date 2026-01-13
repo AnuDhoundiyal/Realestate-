@@ -1,0 +1,133 @@
+<div class="chat-container">
+    <div class="sidebar">
+        <div class="tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'messages'"
+                (click)="activeTab = 'messages'">Messages</button>
+            <button class="tab-btn" [class.active]="activeTab === 'broadcast'"
+                (click)="activeTab = 'broadcast'">Broadcast</button>
+        </div>
+
+        <div class="user-list" *ngIf="activeTab === 'messages'">
+            <div class="list-header">
+                <h2>Chats</h2>
+                <button class="btn-new-chat" (click)="openNewChatModal()">+</button>
+            </div>
+            <div class="list-items">
+                <div *ngFor="let chat of conversations" class="user-item"
+                    [class.active]="selectedUser?._id === chat._id" (click)="selectConversation(chat)">
+                    <div class="avatar">{{ chat.otherUser.name.charAt(0) }}</div>
+                    <div class="info">
+                        <span class="name">{{ chat.otherUser.name }}</span>
+                        <span class="role">{{ chat.otherUser.role }}</span>
+                        <div class="last-msg" *ngIf="chat.lastMessage">{{ chat.lastMessage.content | slice:0:20 }}...
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="conversations.length === 0" class="empty-list">No conversations yet.</div>
+            </div>
+        </div>
+
+        <div class="broadcast-sidebar" *ngIf="activeTab === 'broadcast'">
+            <div class="list-header">
+                <h2>Broadcast</h2>
+            </div>
+            <p class="info-text">Send a system announcement to all users or agents.</p>
+        </div>
+    </div>
+
+    <div class="chat-area" *ngIf="activeTab === 'messages'">
+        <div *ngIf="selectedUser; else noSelection" class="chat-content">
+            <div class="chat-header">
+                <div class="avatar">{{ selectedUser.otherUser.name.charAt(0) }}</div>
+                <div class="header-info">
+                    <h3>{{ selectedUser.otherUser.name }}</h3>
+                    <span>{{ selectedUser.otherUser.email }}</span>
+                </div>
+            </div>
+
+            <div class="messages-list">
+                <div *ngFor="let msg of messages" class="message" [class.sent]="msg.sender._id === currentUser.id"
+                    [class.received]="msg.sender._id !== currentUser.id" [class.system]="msg.isSystemMessage">
+
+                    <div class="bubble" *ngIf="!msg.isSystemMessage">
+                        {{ msg.content }}
+                    </div>
+
+                    <div class="system-bubble" *ngIf="msg.isSystemMessage">
+                        <span class="icon"><i class="fas fa-info-circle"></i></span> {{ msg.content }}
+                    </div>
+
+                    <div class="meta-row">
+                        <span class="time">{{ msg.createdAt | date:'shortTime' }}</span>
+                        <button class="delete-msg-btn" (click)="deleteMessage(msg._id)" title="Delete"
+                            *ngIf="!msg.isSystemMessage">×</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..."
+                    type="text">
+                <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
+                    Send <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <ng-template #noSelection>
+            <div class="no-selection">
+                <h3>Select a conversation to start chatting</h3>
+            </div>
+        </ng-template>
+    </div>
+
+    <div class="broadcast-area" *ngIf="activeTab === 'broadcast'">
+        <div class="broadcast-form">
+            <h2>Send Broadcast Message</h2>
+
+            <div class="form-group">
+                <label>Recipients</label>
+                <select [(ngModel)]="broadcastRecipient">
+                    <option value="ALL">Everyone (Users & Agents)</option>
+                    <option value="USERS">Only Users</option>
+                    <option value="AGENTS">Only Agents</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Message</label>
+                <textarea [(ngModel)]="broadcastMessage" rows="6"
+                    placeholder="Type your announcement here..."></textarea>
+            </div>
+
+            <button class="btn-broadcast" (click)="sendBroadcast()" [disabled]="!broadcastMessage.trim()">
+                Send Announcement
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- New Chat Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Start New Conversation</h3>
+            <button class="close-btn" (click)="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="text" [(ngModel)]="searchUser" (ngModelChange)="filterUsers()"
+                placeholder="Search user or agent..." class="search-input">
+            <div class="user-list">
+                <div class="user-item" *ngFor="let user of filteredUsers" (click)="startNewChat(user)">
+                    <div class="avatar small">{{ user.name.charAt(0) }}</div>
+                    <div class="info">
+                        <div class="name">{{ user.name }}</div>
+                        <div class="role badge" [class.agent]="user.role === 'agent'">{{ user.role }}</div>
+                        <div class="email">{{ user.email }}</div>
+                    </div>
+                </div>
+                <div class="empty" *ngIf="filteredUsers.length === 0">No users found</div>
+            </div>
+        </div>
+    </div>
+</div>

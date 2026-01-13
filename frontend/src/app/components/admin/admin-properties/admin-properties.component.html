@@ -1,0 +1,70 @@
+<div class="page-container">
+    <div class="header">
+        <h1>Properties Management</h1>
+        <a routerLink="/admin/properties/add" class="btn-primary">
+            <i class="fas fa-plus"></i> Add Property
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <div class="filter-tabs">
+            <button [class.active]="filter === 'All'" (click)="setFilter('All')">All</button>
+            <button [class.active]="filter === 'Active'" (click)="setFilter('Active')">Active</button>
+            <button [class.active]="filter === 'Sold'" (click)="setFilter('Sold')">Sold</button>
+            <button [class.active]="filter === 'Rented'" (click)="setFilter('Rented')">Rented</button>
+            <button [class.active]="filter === 'Hidden'" (click)="setFilter('Hidden')">Hidden</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading properties...</div>
+
+    <div *ngIf="!loading && filteredProperties.length === 0" class="empty-state">
+        <p>No properties found.</p>
+    </div>
+
+    <div class="listings-grid" *ngIf="!loading && filteredProperties.length > 0">
+        <div class="listing-card" *ngFor="let prop of filteredProperties">
+            <div class="img-wrapper">
+                <img [src]="prop.imageUrl || 'assets/placeholder.jpg'" alt="Property" class="thumb">
+                <span class="category-tag">{{ prop.type || 'Property' }}</span>
+                <div class="owner-badge" *ngIf="prop.owner">
+                    <i class="fas fa-user-tie"></i> {{ prop.owner.name }}
+                </div>
+            </div>
+
+            <div class="details">
+                <h3>{{ prop.title }}</h3>
+                <p class="price">{{ prop.price | currency }}</p>
+                <p class="loc">
+                    <i class="fas fa-map-marker-alt"></i> {{ prop.location }}
+                </p>
+
+                <div class="meta">
+                    <span class="badge" [class.sold]="prop.status === 'Sold'" [class.active]="prop.status === 'Active'"
+                        [class.rented]="prop.status === 'Rented'" [class.hidden]="prop.status === 'Hidden'">
+                        {{ prop.status }}
+                    </span>
+                    <span class="date">{{ prop.createdAt | date:'mediumDate' }}</span>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="actions">
+                <a [routerLink]="['/properties', prop._id]" class="btn-sm" target="_blank">View</a>
+
+                <button *ngIf="prop.status === 'Active'" (click)="updateStatus(prop._id, 'Sold')"
+                    class="btn-sm">Sold</button>
+
+                <button *ngIf="prop.status === 'Active'" (click)="updateStatus(prop._id, 'Rented')"
+                    class="btn-sm">Rented</button>
+
+                <button *ngIf="prop.status !== 'Hidden'" (click)="updateStatus(prop._id, 'Hidden')"
+                    class="btn-sm destructive">Hide</button>
+
+                <button *ngIf="prop.status === 'Hidden' || prop.status === 'Sold' || prop.status === 'Rented'"
+                    (click)="updateStatus(prop._id, 'Active')" class="btn-sm primary">Active</button>
+            </div>
+        </div>
+    </div>
+</div>

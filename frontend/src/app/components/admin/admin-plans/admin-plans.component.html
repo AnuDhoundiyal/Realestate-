@@ -1,0 +1,84 @@
+<div class="page-container">
+    <div class="header">
+        <h1>Plans Management</h1>
+        <button class="btn btn-primary" (click)="openAddForm()">+ Add Plan</button>
+    </div>
+
+    <div class="plans-grid">
+        <div class="plan-card" *ngFor="let plan of plans">
+            <div class="plan-header">
+                <h3>{{ plan.name }}</h3>
+                <span class="badge">{{ plan.role }}</span>
+            </div>
+            <div class="price">
+                {{ plan.price | currency: plan.currency }}
+            </div>
+            <div class="features">
+                <div class="feature-item">
+                    <span class="icon">📝</span> Listing Limit: {{ plan.listingLimit || 'Unlimited' }}
+                </div>
+                <div class="feature-item">
+                    <span class="icon">💬</span> Chat Limit: {{ plan.chatLimit }}
+                </div>
+                <div class="feature-list">
+                    <div *ngFor="let feature of plan.features" class="feature-tag">✔ {{ feature }}</div>
+                </div>
+            </div>
+            <button class="btn btn-outline" (click)="openEditForm(plan)">Edit Plan</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading plans...</div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" *ngIf="showForm">
+        <div class="modal">
+            <h2>{{ editingPlan ? 'Edit Plan' : 'Add New Plan' }}</h2>
+            <form (ngSubmit)="submitForm()">
+                <div class="form-group">
+                    <label>Plan Name</label>
+                    <input [(ngModel)]="planForm.name" name="name" required class="form-control"
+                        placeholder="e.g. Basic">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select [(ngModel)]="planForm.role" name="role" class="form-control">
+                        <option value="user">User</option>
+                        <option value="agent">Agent</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" [(ngModel)]="planForm.price" name="price" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <input [(ngModel)]="planForm.currency" name="currency" required class="form-control"
+                            placeholder="USD">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Listing Limit</label>
+                        <input type="number" [(ngModel)]="planForm.listingLimit" name="listingLimit"
+                            class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Chat Limit</label>
+                        <input type="number" [(ngModel)]="planForm.chatLimit" name="chatLimit" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Features (comma separated)</label>
+                    <textarea [(ngModel)]="planForm.features" name="features" class="form-control"
+                        placeholder="Verified Badge, Top Listing..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Plan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

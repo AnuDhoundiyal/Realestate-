@@ -1,0 +1,68 @@
+<div class="page-content container">
+    <div class="contact-header">
+        <h1>Get in <span class="highlight">Touch</span></h1>
+        <p>We're here to help you find your dream property.</p>
+    </div>
+
+    <div class="contact-grid">
+        <!-- Contact Form -->
+        <div class="contact-card form-card shadow-premium">
+            <h2>Send us a Message</h2>
+            <form (submit)="onSubmit($event)">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name="name" [(ngModel)]="formData.name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email" [(ngModel)]="formData.email" required>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="5" class="form-control" name="message" [(ngModel)]="formData.message"
+                        required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Send Message</button>
+            </form>
+        </div>
+
+        <!-- Info & Map -->
+        <div class="info-column">
+            <div class="contact-card info-card shadow-premium">
+                <h3>Contact Information</h3>
+                <div class="info-item">
+                    <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                    <div>
+                        <strong>Address</strong>
+                        <p>123 Real Estate Avenue, Surat, Gujarat 395007</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
+                    <div>
+                        <strong>Phone</strong>
+                        <p>+91 98765 43210</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <strong>Email</strong>
+                        <p>contact&#64;estatepro.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Card -->
+            <div class="contact-card map-card shadow-premium">
+                <h3>Our Location</h3>
+                <div class="map-wrapper">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119066.41264372957!2d72.74109895696515!3d21.15920015690372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04e59411d1563%3A0xfe4558290938b042!2sSurat%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1647845678901!5m2!1sen!2sin"
+                        width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

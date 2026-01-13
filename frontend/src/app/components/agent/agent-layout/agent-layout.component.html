@@ -1,0 +1,59 @@
+<div class="agent-container" [class.collapsed]="isSidebarCollapsed">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Agent Panel</h2>
+            <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a routerLink="/agent/dashboard" routerLinkActive="active" class="nav-item">
+                <span class="icon">📊</span>
+                <span class="label">Overview</span>
+            </a>
+            <a routerLink="/agent/listings" routerLinkActive="active" class="nav-item">
+                <span class="icon">🏡</span>
+                <span class="label">My Listings</span>
+            </a>
+            <a routerLink="/agent/properties/add" routerLinkActive="active" class="nav-item">
+                <span class="icon">➕</span>
+                <span class="label">Add Property</span>
+            </a>
+            <a routerLink="/agent/plan" routerLinkActive="active" class="nav-item">
+                <span class="icon">📄</span>
+                <span class="label">My Plan</span>
+            </a>
+            <a routerLink="/agent/chat" routerLinkActive="active" class="nav-item">
+                <span class="icon">💬</span>
+                <span class="label">Messages</span>
+            </a>
+            <a routerLink="/agent/profile" routerLinkActive="active" class="nav-item">
+                <span class="icon">👤</span>
+                <span class="label">Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button (click)="confirmLogout()" class="logout-btn">
+                <span class="icon">🚪</span>
+                <span class="label">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showLogoutModal">
+        <div class="modal-card">
+            <div class="modal-icon">👋</div>
+            <h3>Leaving so soon?</h3>
+            <p>Are you sure you want to end your session?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" (click)="cancelLogout()">Cancel</button>
+                <button class="btn-confirm" (click)="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+</div>

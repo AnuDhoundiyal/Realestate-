@@ -1,0 +1,65 @@
+<div class="page-container">
+    <div class="profile-header">
+        <h1>My Profile</h1>
+    </div>
+
+    <div class="profile-card" *ngIf="user; else loading">
+        <div class="cover-image"></div>
+
+        <div class="profile-content">
+            <div class="avatar-wrapper">
+                <div class="avatar-placeholder">{{ user.name.charAt(0) }}</div>
+            </div>
+
+            <div class="user-identity">
+                <h2>{{ user.name }}</h2>
+                <span class="role-badge">{{ user.role }}</span>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="label">Email Address</span>
+                    <div class="value">
+                        <i class="fas fa-envelope"></i>
+                        {{ user.email }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="label">Account Status</span>
+                    <div class="value">
+                        <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                        Active
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="label">Member Since</span>
+                    <div class="value">
+                        <i class="fas fa-calendar-alt"></i>
+                        Jan 2024 <!-- Mock date or real from DB -->
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <span class="label">Phone</span>
+                    <div class="value">
+                        <i class="fas fa-phone-alt"></i>
+                        Not provided
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-outline">Change Password</button>
+                <button class="btn-primary">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #loading>
+        <div class="profile-card" style="padding: 4rem; text-align: center;">
+            Loading profile...
+        </div>
+    </ng-template>
+</div>

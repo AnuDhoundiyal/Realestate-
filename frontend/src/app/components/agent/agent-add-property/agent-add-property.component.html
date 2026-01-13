@@ -1,0 +1,192 @@
+<div class="page-container">
+    <!-- Success Toast -->
+    <div class="toast-notification success" *ngIf="showSuccess">
+        <div class="toast-content">
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="message">
+                <h4>Success!</h4>
+                <p>Your property has been successfully added and is now visible in your listings.</p>
+            </div>
+        </div>
+        <div class="progress-bar"></div>
+    </div>
+
+    <h1>Create New Listing</h1>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-steps">
+            <div class="step" *ngFor="let step of steps; let i = index" [class.active]="i + 1 === currentStep"
+                [class.completed]="i + 1 < currentStep">
+                <div class="step-circle">
+                    <span *ngIf="i + 1 >= currentStep">{{ i + 1 }}</span>
+                    <i class="fas fa-check" *ngIf="i + 1 < currentStep"></i>
+                </div>
+                <span class="step-label">{{ step }}</span>
+            </div>
+            <div class="progress-line-bg">
+                <div class="progress-line-fill" [style.width.%]="((currentStep - 1) / (totalSteps - 1)) * 100"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form #propForm="ngForm" (ngSubmit)="submit(propForm)">
+
+            <!-- STEP 1: Basic Info -->
+            <div class="step-content" *ngIf="currentStep === 1">
+                <div class="section">
+                    <h3>Basic Information</h3>
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input [(ngModel)]="property.title" name="title" required class="form-control"
+                            placeholder="e.g. Luxury Apartment in Downtown">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea [(ngModel)]="property.description" name="description" required class="form-control"
+                            rows="5" placeholder="Describe the key features and selling points..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price *</label>
+                            <input type="number" [(ngModel)]="property.price" name="price" required
+                                class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select [(ngModel)]="property.type" name="type" class="form-control">
+                                <option value="Sale">For Sale</option>
+                                <option value="Rent">For Rent</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Details & Location -->
+            <div class="step-content" *ngIf="currentStep === 2">
+                <div class="section">
+                    <h3>Location & Category</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Location *</label>
+                            <input list="locations" [(ngModel)]="property.location" name="location" class="form-control"
+                                placeholder="Select or type new..." required>
+                            <datalist id="locations">
+                                <option *ngFor="let loc of locations" [value]="loc">
+                            </datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <input list="categories" [(ngModel)]="property.category" name="category"
+                                class="form-control" placeholder="Select or type new..." required>
+                            <datalist id="categories">
+                                <option *ngFor="let cat of categories" [value]="cat">
+                            </datalist>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Property Specs</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Bedrooms</label>
+                            <input type="number" [(ngModel)]="property.bedrooms" name="bedrooms" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Bathrooms</label>
+                            <input type="number" [(ngModel)]="property.bathrooms" name="bathrooms" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Area (sq ft)</label>
+                            <input type="number" [(ngModel)]="property.area" name="area" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Media & Amenities -->
+            <div class="step-content" *ngIf="currentStep === 3">
+                <div class="section image-section">
+                    <h3>Property Media</h3>
+                    <div class="tabs">
+                        <button type="button" [class.active]="imageMode === 'upload'"
+                            (click)="imageMode = 'upload'">Upload Photos</button>
+                        <button type="button" [class.active]="imageMode === 'url'" (click)="imageMode = 'url'">Image
+                            URLs</button>
+                    </div>
+
+                    <div class="tab-content" *ngIf="imageMode === 'upload'">
+                        <div class="form-group">
+                            <label>Main Cover Image</label>
+                            <div class="upload-box">
+                                <input type="file" (change)="onFileSelected($event)" accept="image/*">
+                                <div *ngIf="!previewUrl" style="padding: 1rem;">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload cover image</p>
+                                </div>
+                                <img *ngIf="previewUrl" [src]="previewUrl" class="preview-img">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Gallery Images</label>
+                            <div class="upload-box">
+                                <input type="file" (change)="onGallerySelected($event)" accept="image/*" multiple>
+                                <div *ngIf="galleryPreviews.length === 0" style="padding: 1rem;">
+                                    <i class="fas fa-images"></i>
+                                    <p>Select multiple images</p>
+                                </div>
+                                <div class="gallery-grid" *ngIf="galleryPreviews.length > 0">
+                                    <img *ngFor="let preview of galleryPreviews" [src]="preview" class="thumb-img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" *ngIf="imageMode === 'url'">
+                        <div class="form-group">
+                            <label>Main Image URL</label>
+                            <input [(ngModel)]="property.imageUrl" name="imageUrl" class="form-control"
+                                placeholder="https://example.com/main.jpg">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Amenities</h3>
+                    <div class="features-grid">
+                        <label *ngFor="let feat of commonFeatures" class="checkbox-box">
+                            <input type="checkbox" [(ngModel)]="selectedCommonFeatures[feat]" [name]="'feat_' + feat">
+                            {{ feat }}
+                        </label>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Additional Features</label>
+                        <input [(ngModel)]="additionalFeatures" name="additionalFeatures" class="form-control"
+                            placeholder="e.g. Fireplace, Sea View">
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="button" class="btn btn-secondary" *ngIf="currentStep === 1"
+                    routerLink="/agent/listings">Cancel</button>
+                <button type="button" class="btn btn-secondary" *ngIf="currentStep > 1"
+                    (click)="prevStep()">Previous</button>
+
+                <button type="button" class="btn btn-primary" *ngIf="currentStep < totalSteps" (click)="nextStep()">Next
+                    Step</button>
+                <button type="submit" class="btn btn-primary" *ngIf="currentStep === totalSteps">Create Listing</button>
+            </div>
+        </form>
+    </div>
+</div>

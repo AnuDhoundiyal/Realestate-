@@ -1,0 +1,291 @@
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.plans-container {
+    padding: 4rem 1rem;
+    background: var(--background-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &.top-spacing {
+        padding-top: 5rem;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 4rem;
+        animation: fadeUp 0.6s ease-out;
+
+        h1 {
+            font-size: 3rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .toggle-container,
+        .currency-toggle {
+            display: inline-flex;
+            background: var(--white);
+            padding: 0.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+
+            button {
+                padding: 0.6rem 1.5rem;
+                border: none;
+                background: transparent;
+                color: var(--text-light);
+                font-size: 0.95rem;
+                font-weight: 600;
+                border-radius: 50px;
+                transition: all 0.3s ease;
+
+                &.active {
+                    background: var(--primary-color);
+                    color: white;
+                    box-shadow: 0 4px 10px rgba(198, 168, 115, 0.4);
+                }
+
+                &:hover:not(.active) {
+                    color: var(--primary-color);
+                }
+            }
+        }
+    }
+
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
+        width: 100%;
+        max-width: 1200px;
+        margin-bottom: 6rem;
+
+        .plan-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.5s ease-out backwards;
+
+            &:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            &:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            &:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            &:hover {
+                transform: translateY(-10px);
+                box-shadow: var(--shadow-lg);
+                border-color: var(--primary-color);
+            }
+
+            .card-header {
+                text-align: center;
+                margin-bottom: 2rem;
+                padding-bottom: 2rem;
+                border-bottom: 1px solid var(--border-color);
+
+                h2 {
+                    font-size: 1.5rem;
+                    color: var(--text-main);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 1.5rem;
+                }
+
+                .price {
+                    display: flex;
+                    align-items: baseline;
+                    justify-content: center;
+                    color: var(--primary-color);
+
+                    .currency {
+                        font-size: 1.5rem;
+                        font-weight: 600;
+                        margin-right: 4px;
+                    }
+
+                    .amount {
+                        font-size: 3.5rem;
+                        font-weight: 800;
+                        line-height: 1;
+                    }
+
+                    .period {
+                        color: var(--text-light);
+                        font-size: 1rem;
+                        margin-left: 5px;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .features {
+                margin-bottom: 2rem;
+                flex-grow: 1;
+
+                ul {
+                    list-style: none;
+
+                    li {
+                        margin-bottom: 1rem;
+                        color: var(--text-light);
+                        font-size: 1rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+
+                        i {
+                            color: var(--primary-color);
+                            font-size: 1.1rem;
+                        }
+                    }
+                }
+            }
+
+            .select-btn {
+                background: var(--primary-color);
+                color: #fff;
+                border: none;
+                padding: 1rem;
+                border-radius: 12px;
+                font-size: 1.1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+
+                &:hover {
+                    background: var(--primary-dark);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 15px rgba(198, 168, 115, 0.4);
+                }
+            }
+        }
+    }
+
+    .faq-section {
+        width: 100%;
+        max-width: 900px;
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--text-main);
+
+            .highlight {
+                color: var(--primary-color);
+            }
+        }
+
+        .faq-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            .faq-item {
+                background: var(--white);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                overflow: hidden;
+                transition: all 0.3s;
+
+                &[open] {
+                    box-shadow: var(--shadow-md);
+                    border-color: var(--primary-color);
+
+                    summary {
+                        color: var(--primary-color);
+                        border-bottom: 1px solid var(--border-color);
+
+                        i {
+                            transform: rotate(180deg);
+                        }
+                    }
+                }
+
+                summary {
+                    padding: 1.5rem;
+                    cursor: pointer;
+                    font-weight: 600;
+                    font-size: 1.1rem;
+                    color: var(--text-main);
+                    list-style: none;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: color 0.2s;
+
+                    &::-webkit-details-marker {
+                        display: none;
+                    }
+
+                    &:hover {
+                        color: var(--primary-color);
+                    }
+
+                    i {
+                        transition: transform 0.3s;
+                        color: var(--primary-color);
+                    }
+                }
+
+                p {
+                    padding: 1.5rem;
+                    line-height: 1.6;
+                    color: var(--text-light);
+                    margin: 0;
+                    background: var(--background-color);
+                }
+            }
+        }
+    }
+
+    .no-plans {
+        grid-column: 1 / -1;
+        text-align: center;
+        font-size: 1.2rem;
+        color: var(--text-light);
+        padding: 3rem;
+    }
+}

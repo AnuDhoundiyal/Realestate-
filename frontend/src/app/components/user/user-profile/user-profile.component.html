@@ -1,0 +1,89 @@
+<div class="page-container" *ngIf="!loading">
+
+    <div class="profile-layout">
+        <!-- Identity Card -->
+        <div class="identity-col">
+            <div class="identity-card">
+                <div class="avatar-glow">
+                    <img [src]="user.profileImage || 'https://placehold.co/150x150/e2e8f0/1e293b?text=User'"
+                        alt="Profile">
+                    <div class="upload-btn" (click)="fileInput.click()">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+
+                <h2>{{ user.name }}</h2>
+                <div class="role-badge"><i class="fas fa-user"></i> User Account</div>
+                <p class="join-date">Member since {{ user.createdAt | date:'mediumDate' }}</p>
+
+                <div class="stats-mini">
+                    <div class="stat">
+                        <span class="val">{{ user.savedProperties?.length || 0 }}</span>
+                        <span class="lbl">Saved</span>
+                    </div>
+                    <div class="stat">
+                        <span class="val">{{ user.viewedProperties?.length || 0 }}</span>
+                        <span class="lbl">Viewed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="details-col">
+            <div class="edit-card">
+                <div class="card-header">
+                    <h3>Personal Information</h3>
+                    <p>Update your personal details and contact info.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="far fa-user"></i>
+                            <input type="text" [(ngModel)]="user.name" placeholder="John Doe">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-wrapper disabled">
+                            <i class="far fa-envelope"></i>
+                            <input type="email" [value]="user.email" disabled>
+                            <span class="lock-icon"><i class="fas fa-lock"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone-alt"></i>
+                            <input type="text" [(ngModel)]="user.phone" placeholder="+1 (555) 000-0000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-primary" (click)="updateProfile()" [disabled]="saving">
+                        <span *ngIf="!saving">Save Changes</span>
+                        <span *ngIf="saving"><i class="fas fa-spinner fa-spin"></i> Saving...</span>
+                    </button>
+                    <span class="success-msg" *ngIf="message">
+                        <i class="fas fa-check-circle"></i> {{ message }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Current Plan Mini View -->
+            <div class="plan-mini-card">
+                <div class="plan-info">
+                    <h4>Current Plan</h4>
+                    <p>Manage your subscription and limits.</p>
+                </div>
+                <a routerLink="/user/plan" class="btn-secondary">View Plan</a>
+            </div>
+        </div>
+    </div>
+</div>

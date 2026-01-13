@@ -1,0 +1,112 @@
+<div class="payment-container" *ngIf="selectedPlan">
+    <div class="payment-wrapper">
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="plan-details">
+                <h3>{{ selectedPlan.name }} Plan</h3>
+                <p class="price">{{ selectedPlan.currency === 'USD' ? '$' : selectedPlan.currency }} {{
+                    selectedPlan.price }} <span class="period">/ month</span></p>
+                <ul class="features">
+                    <li *ngFor="let feature of selectedPlan.features">✔ {{ feature }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="payment-details">
+            <h2>Billing Details</h2>
+            <form [formGroup]="paymentForm" (ngSubmit)="proceedToPay()">
+
+                <div class="form-group full-name">
+                    <label>Full Name</label>
+                    <input type="text" formControlName="fullName" placeholder="John Doe">
+                    <div *ngIf="f['fullName'].touched && f['fullName'].invalid" class="error">Required</div>
+                </div>
+
+                <div class="form-group full-addr">
+                    <label>Address Line</label>
+                    <input type="text" formControlName="addressLine" placeholder="123 Main St">
+                    <div *ngIf="f['addressLine'].touched && f['addressLine'].invalid" class="error">Required</div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" formControlName="city">
+                        <div *ngIf="f['city'].touched && f['city'].invalid" class="error">Required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" formControlName="state">
+                        <div *ngIf="f['state'].touched && f['state'].invalid" class="error">Required</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <input type="text" formControlName="pincode">
+                    <div *ngIf="f['pincode'].touched && f['pincode'].invalid" class="error">Required</div>
+                </div>
+
+                <h3>Payment Method</h3>
+                <div class="payment-methods">
+                    <label *ngFor="let method of paymentMethods">
+                        <input type="radio" formControlName="paymentMethod" [value]="method"> {{ method }}
+                    </label>
+                </div>
+
+                <!-- Conditional Fields -->
+                <div *ngIf="f['paymentMethod'].value === 'Credit/Debit Card'" class="card-details">
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" formControlName="cardNumber" placeholder="0000 0000 0000 0000">
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Expiry</label>
+                            <input type="text" formControlName="expiryDate" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="password" formControlName="cvv" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="f['paymentMethod'].value === 'UPI'" class="upi-details">
+                    <div class="form-group">
+                        <label>UPI ID</label>
+                        <input type="text" formControlName="upiId" placeholder="user@upi">
+                    </div>
+                </div>
+
+                <div *ngIf="f['paymentMethod'].value === 'Net Banking'" class="net-banking">
+                    <div class="form-group">
+                        <label>Select Bank</label>
+                        <select formControlName="bankName">
+                            <option *ngFor="let bank of banks" [value]="bank">{{ bank }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="pay-btn" [disabled]="isProcessing">
+                    {{ isProcessing ? 'Processing Payment...' : 'Proceed to Payment' }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Popup -->
+<div class="overlay" *ngIf="showConfirmation">
+    <div class="popup scale-in-center">
+        <h3>Confirm Payment</h3>
+        <p>Are you sure you want to make this payment of <strong>{{ selectedPlan?.currency }} {{ selectedPlan?.price
+                }}</strong>?</p>
+        <div class="actions">
+            <button class="cancel-btn" (click)="cancelPayment()">Cancel</button>
+            <button class="confirm-btn" (click)="confirmPayment()">Yes, Proceed</button>
+        </div>
+    </div>
+</div>

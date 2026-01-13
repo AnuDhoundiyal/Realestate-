@@ -1,0 +1,66 @@
+<div class="page-container">
+    <h1>My Subscription Plan</h1>
+
+    <div *ngIf="loading" class="loading">Loading plan details...</div>
+
+    <div *ngIf="!loading && planData" class="plan-card">
+
+        <!-- Premium Header -->
+        <div class="header">
+            <div class="plan-name">
+                <h2>{{ planData.plan?.name || 'No Active Plan' }}</h2>
+                <span>Current Subscription</span>
+            </div>
+            <div class="status-badge" *ngIf="planData.plan">ACTIVE</div>
+        </div>
+
+        <div class="card-content" *ngIf="planData.plan">
+
+            <!-- Usage Section -->
+            <div class="usage-section">
+                <div class="usage-header">
+                    <span>Listing Usage</span>
+                    <span class="limit-info">{{ planData.usage.used }} / {{ planData.plan.listingLimit }} Used</span>
+                </div>
+                <!-- Percentage calculation for width: (used / limit) * 100 -->
+                <div class="progress-track">
+                    <div class="progress-fill"
+                        [style.width.%]="(planData.usage.used / planData.plan.listingLimit) * 100"></div>
+                </div>
+                <div style="text-align: right; margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-light);">
+                    {{ planData.usage.remaining }} Remaining
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <h3>Included Features</h3>
+            <div class="features-grid">
+                <div class="feature-item" *ngFor="let feat of planData.plan.features">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ feat }}</span>
+                </div>
+                <!-- Dummy perks to make it look full if not enough features -->
+                <div class="feature-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Priority Support</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics Dashboard</span>
+                </div>
+            </div>
+
+            <!-- Upgrade CTA -->
+            <div class="upgrade-cta">
+                <p>Need more listings or premium features?</p>
+                <a routerLink="/plans" class="btn-upgrade">Upgrade Plan</a>
+            </div>
+        </div>
+
+        <div *ngIf="!planData.plan" class="no-plan">
+            <h3>No Active Plan Found</h3>
+            <p>You currently do not have an active subscription. Upgrade now to start listing properties.</p>
+            <a routerLink="/plans" class="btn-upgrade">View Plans</a>
+        </div>
+    </div>
+</div>

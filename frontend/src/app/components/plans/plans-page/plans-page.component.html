@@ -1,0 +1,80 @@
+<div class="plans-container top-spacing">
+    <div class="header">
+        <h1>Choose Your Plan</h1>
+        <p>Unlock premium features and supercharge your real estate journey.</p>
+
+        <div class="controls-row">
+            <!-- Plan Type Toggle -->
+            <div class="toggle-container">
+                <button [class.active]="!isAgentPlan" (click)="togglePlanType(false)">User Plans</button>
+                <button [class.active]="isAgentPlan" (click)="togglePlanType(true)">Agent Plans</button>
+            </div>
+
+            <!-- Currency Toggle -->
+            <div class="currency-toggle">
+                <button [class.active]="currency === 'USD'" (click)="setCurrency('USD')">$ USD</button>
+                <button [class.active]="currency === 'INR'" (click)="setCurrency('INR')">₹ INR</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="plans-grid">
+        <div class="plan-card" *ngFor="let plan of displayPlans">
+            <div class="card-header">
+                <h2>{{ plan.name }}</h2>
+                <div class="price">
+                    <span class="currency">{{ currency === 'USD' ? '$' : '₹' }}</span>
+                    <span class="amount">{{ getConvertedPrice(plan.price) }}</span>
+                    <span class="period">/mo</span>
+                </div>
+            </div>
+
+            <div class="features">
+                <ul>
+                    <li *ngFor="let feature of plan.features">
+                        <i class="fas fa-check-circle"></i> {{ feature }}
+                    </li>
+                    <li *ngIf="plan.listingLimit > 0">
+                        <i class="fas fa-check-circle"></i> {{ plan.listingLimit }} Listings
+                    </li>
+                    <li *ngIf="plan.chatLimit > 0">
+                        <i class="fas fa-check-circle"></i> {{ plan.chatLimit }} Chat Limit
+                    </li>
+                </ul>
+            </div>
+
+            <button class="select-btn" (click)="selectPlan(plan)">Choose Plan</button>
+        </div>
+
+        <div *ngIf="displayPlans.length === 0" class="no-plans">
+            <p>No plans available for this category yet.</p>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <h2 class="section-title">Frequently Asked <span class="highlight">Questions</span></h2>
+
+        <div class="faq-grid">
+            <details class="faq-item">
+                <summary>Can I cancel my plan anytime? <i class="fas fa-chevron-down"></i></summary>
+                <p>Yes, you can cancel your subscription at any time. Your plan will remain active until the end of the
+                    current billing cycle.</p>
+            </details>
+            <details class="faq-item">
+                <summary>What happens to my listings if I downgrade? <i class="fas fa-chevron-down"></i></summary>
+                <p>If you downgrade to a plan with fewer listings, your oldest listings exceeding the new limit will be
+                    paused. You can choose which ones to keep active.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Do you offer refunds? <i class="fas fa-chevron-down"></i></summary>
+                <p>We offer a 7-day money-back guarantee if you are not satisfied with our premium features. Contact
+                    support for assistance.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Is there a free trial for agents? <i class="fas fa-chevron-down"></i></summary>
+                <p>We do not currently offer a free trial for agent plans, but our Basic User plan is free forever.</p>
+            </details>
+        </div>
+    </div>
+</div>

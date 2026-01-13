@@ -1,0 +1,63 @@
+<div class="admin-container" [class.collapsed]="isSidebarCollapsed">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin</h2>
+            <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+                <span class="icon">📊</span>
+                <span class="label">Overview</span>
+            </a>
+            <a routerLink="/admin/agents" routerLinkActive="active" class="nav-item">
+                <span class="icon">👔</span>
+                <span class="label">Agents</span>
+            </a>
+            <a routerLink="/admin/users" routerLinkActive="active" class="nav-item">
+                <span class="icon">👥</span>
+                <span class="label">Users</span>
+            </a>
+            <a routerLink="/admin/properties" routerLinkActive="active" class="nav-item">
+                <span class="icon">🏡</span>
+                <span class="label">Properties</span>
+            </a>
+            <a routerLink="/admin/plans" routerLinkActive="active" class="nav-item">
+                <span class="icon">📄</span>
+                <span class="label">Plans</span>
+            </a>
+            <a routerLink="/admin/chat" routerLinkActive="active" class="nav-item">
+                <span class="icon">💬</span>
+                <span class="label">Chat</span>
+            </a>
+            <a routerLink="/admin/profile" routerLinkActive="active" class="nav-item">
+                <span class="icon">👤</span>
+                <span class="label">Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button (click)="logout()" class="logout-btn">
+                <span class="icon">🚪</span>
+                <span class="label">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showLogoutModal">
+        <div class="modal-card">
+            <div class="modal-icon">👋</div>
+            <h3>Leaving so soon?</h3>
+            <p>Are you sure you want to end your session?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" (click)="cancelLogout()">Cancel</button>
+                <button class="btn-confirm" (click)="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+</div>

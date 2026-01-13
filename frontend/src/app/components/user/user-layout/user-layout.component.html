@@ -1,0 +1,42 @@
+<div class="admin-container" [class.collapsed]="isSidebarCollapsed">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>User Panel</h2>
+            <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a routerLink="/user/dashboard" routerLinkActive="active" class="nav-item">
+                <span class="icon">📊</span>
+                <span class="label">Overview</span>
+            </a>
+            <a routerLink="/user/profile" routerLinkActive="active" class="nav-item">
+                <span class="icon">👤</span>
+                <span class="label">My Profile</span>
+            </a>
+            <a routerLink="/user/plan" routerLinkActive="active" class="nav-item">
+                <span class="icon">📄</span>
+                <span class="label">My Plan</span>
+            </a>
+            <a routerLink="/user/wishlist" routerLinkActive="active" class="nav-item">
+                <span class="icon">❤️</span>
+                <span class="label">Saved Properties</span>
+            </a>
+            <a routerLink="/user/chat" routerLinkActive="active" class="nav-item">
+                <span class="icon">💬</span>
+                <span class="label">Messages</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button (click)="logout()" class="logout-btn">
+                <span class="icon">🚪</span>
+                <span class="label">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
+</div>

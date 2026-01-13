@@ -1,0 +1,64 @@
+<div class="page-container">
+    <div class="header">
+        <h1>My Listings</h1>
+        <a routerLink="/agent/properties/add" class="btn-primary">
+            <i class="fas fa-plus"></i> Add New Property
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <div class="filter-tabs">
+            <button [class.active]="filter === 'All'" (click)="setFilter('All')">All</button>
+            <button [class.active]="filter === 'Active'" (click)="setFilter('Active')">Active</button>
+            <button [class.active]="filter === 'Sold'" (click)="setFilter('Sold')">Sold</button>
+            <button [class.active]="filter === 'Rented'" (click)="setFilter('Rented')">Rented</button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading listings...</div>
+
+    <div *ngIf="!loading && filteredListings.length === 0" class="empty-state">
+        <p>No properties found.</p>
+        <a routerLink="/agent/properties/add" class="btn-primary"
+            style="margin-top: 1rem; display: inline-block;">Create One Now</a>
+    </div>
+
+    <div class="listings-grid" *ngIf="!loading && filteredListings.length > 0">
+        <div class="listing-card" *ngFor="let property of filteredListings">
+            <div class="img-wrapper">
+                <img [src]="property.imageUrl || 'assets/placeholder.jpg'" alt="Property" class="thumb">
+                <span class="category-tag">{{ property.type || 'Property' }}</span>
+            </div>
+
+            <div class="details">
+                <h3>{{ property.title }}</h3>
+                <p class="price">{{ property.price | currency }}</p>
+                <p class="loc">
+                    <i class="fas fa-map-marker-alt"></i> {{ property.location }}
+                </p>
+
+                <div class="meta">
+                    <span class="badge" [class.sold]="property.status === 'Sold'"
+                        [class.active]="property.status === 'Active'" [class.rented]="property.status === 'Rented'">
+                        {{ property.status }}
+                    </span>
+                    <span class="date">{{ property.createdAt | date:'mediumDate' }}</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <a [routerLink]="['/properties', property._id]" class="btn-sm">View</a>
+
+                <button *ngIf="property.status === 'Active'" (click)="updateStatus(property._id, 'Sold')"
+                    class="btn-sm">Sold</button>
+                <button *ngIf="property.status === 'Active'" (click)="updateStatus(property._id, 'Rented')"
+                    class="btn-sm">Rented</button>
+
+                <button *ngIf="property.status !== 'Active'" (click)="updateStatus(property._id, 'Active')"
+                    class="btn-sm">Re-List</button>
+            </div>
+        </div>
+    </div>
+</div>

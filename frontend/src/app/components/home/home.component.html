@@ -1,0 +1,80 @@
+<section class="hero">
+    <div class="container hero-content">
+        <h1>Find Your Dream Home Today</h1>
+        <p>Discover the best properties in exclusive locations.</p>
+        <div class="cta-buttons">
+            <a routerLink="/properties" class="btn btn-primary">Browse Properties</a>
+            <a routerLink="/contact" class="btn btn-outline">Contact Us</a>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <div class="section-header icon-header">
+            <h2>Why Choose <span class="highlight">EstatePro</span>?</h2>
+            <p>We provide a premium experience for finding your next home.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon-box"><i class="fas fa-home"></i></div>
+                <h3>Wide Range</h3>
+                <p>Access thousands of exclusive listings in prime locations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box"><i class="fas fa-user-shield"></i></div>
+                <h3>Trusted Agents</h3>
+                <p>Work with verified top-tier agents dedicated to your needs.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box"><i class="fas fa-file-contract"></i></div>
+                <h3>Transparent</h3>
+                <p>Clear pricing and no hidden fees. Complete peace of mind.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties Section -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured <span class="highlight">Properties</span></h2>
+            <p>Hand-picked selections just for you.</p>
+        </div>
+
+        <div class="property-grid">
+            <div class="property-card" *ngFor="let property of featuredProperties">
+                <div class="card-image">
+                    <img [src]="property.imageUrl || (property.images && property.images[0]) || 'assets/placeholder.jpg'"
+                        [alt]="property.title">
+                    <span class="badge">{{ property.type }}</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">{{ property.title }}</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> {{ property.location }}</p>
+                    <div class="price">{{ property.price | currency:'USD' }}</div>
+                    <a [routerLink]="['/properties', property._id]" class="btn btn-outline small">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-all-wrapper">
+            <a routerLink="/properties" class="btn btn-primary">View All Properties <i
+                    class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-overlay"></div>
+    <div class="container cta-content">
+        <h2>Ready to Find Your New Home?</h2>
+        <p>Join thousands of satisfied customers who found their perfect match with EstatePro.</p>
+        <div class="cta-buttons">
+            <a routerLink="/register" class="btn btn-accent large">Get Started</a>
+            <a routerLink="/contact" class="btn btn-outline-light large">Contact Support</a>
+        </div>
+    </div>
+</section>

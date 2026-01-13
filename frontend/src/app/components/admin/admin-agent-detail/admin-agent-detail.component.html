@@ -1,0 +1,53 @@
+<div class="page-container" *ngIf="agent; else loadingTpl">
+    <div class="header">
+        <h1>Agent Details</h1>
+        <div class="actions">
+            <button *ngIf="agent.verificationStatus !== 'VERIFIED'" class="btn btn-success"
+                (click)="verifyAgent('VERIFIED')">Verify Agent</button>
+            <button *ngIf="agent.verificationStatus !== 'REJECTED'" class="btn btn-danger"
+                (click)="verifyAgent('REJECTED')">Reject Agent</button>
+            <a routerLink="/admin/agents" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+
+    <div class="detail-card">
+        <div class="info-row">
+            <div class="label">Name:</div>
+            <div class="value">{{ agent.name }}</div>
+        </div>
+        <div class="info-row">
+            <div class="label">Email:</div>
+            <div class="value">{{ agent.email }}</div>
+        </div>
+        <div class="info-row">
+            <div class="label">Status:</div>
+            <div class="value">
+                <span class="badge" [class.verified]="agent.verificationStatus === 'VERIFIED'"
+                    [class.pending]="agent.verificationStatus === 'PENDING'"
+                    [class.rejected]="agent.verificationStatus === 'REJECTED'">
+                    {{ agent.verificationStatus }}
+                </span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="label">Plan:</div>
+            <div class="value">{{ agent.plan?.name || 'None' }}</div>
+        </div>
+        <div class="info-row">
+            <div class="label">Joined:</div>
+            <div class="value">{{ agent.createdAt | date:'medium' }}</div>
+        </div>
+    </div>
+
+    <!-- Agent Properties Section could go here, fetching properties by owner.id -->
+    <div class="properties-section">
+        <h3>Agent Properties</h3>
+        <p class="text-muted">Properties listing for this agent would appear here.</p>
+        <!-- Require new API call filter properties by owner -->
+    </div>
+
+</div>
+
+<ng-template #loadingTpl>
+    <div class="loading">Loading agent details...</div>
+</ng-template>
