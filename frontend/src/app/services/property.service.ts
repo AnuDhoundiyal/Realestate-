@@ -2,12 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Property } from '../models/property.model';
+import { apiUrl as baseApiUrl } from '../api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PropertyService {
-  private apiUrl = 'http://localhost:5000/api/properties';
+  private apiUrl = `${baseApiUrl}/properties`;
   private http = inject(HttpClient);
 
   getProperties(): Observable<Property[]> {

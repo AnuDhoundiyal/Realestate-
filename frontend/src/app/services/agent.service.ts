@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { apiUrl as baseApiUrl } from '../api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgentService {
-  private apiUrl = 'http://localhost:5000/api/agent';
+  private apiUrl = `${baseApiUrl}/agent`;
   private http = inject(HttpClient);
 
   constructor() { }

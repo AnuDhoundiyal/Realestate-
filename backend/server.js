@@ -12,7 +12,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Database Connection
-mongoose.connect('mongodb://127.0.0.1:27017/realestate')
+mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/realestate')
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error('MongoDB Connection Error:', err));
 
@@ -39,6 +39,11 @@ app.get('/', (req, res) => {
     res.send('Real Estate API is running...');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// For Vercel, we need to export the app
+module.exports = app;
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}

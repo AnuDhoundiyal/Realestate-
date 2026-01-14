@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { apiUrl as baseApiUrl } from '../api.config';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = 'http://localhost:5000/api/admin';
+    private apiUrl = `${baseApiUrl}/admin`;
     private http = inject(HttpClient);
 
     constructor() { }
