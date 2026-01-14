@@ -30,8 +30,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 You can use the following credentials to log in:
 
-- **Admin**: `admin@example.com` / `password123`
-- **Agent**: `agent@example.com` / `password123`
-- **User**: `user@example.com` / `password123`
+- **Admin**: `admin@example.com` / `admin123`
+- **Agent**: `agent@example.com` / `agent123`
+- **User**: `user@example.com` / `user123`
 
 The "Quick Login" chips on the login page are pre-configured with these credentials.
