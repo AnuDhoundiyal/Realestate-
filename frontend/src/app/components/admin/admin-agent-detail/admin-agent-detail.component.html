@@ -39,11 +39,29 @@
         </div>
     </div>
 
-    <!-- Agent Properties Section could go here, fetching properties by owner.id -->
-    <div class="properties-section">
+    <!-- Agent Properties Section -->
+    <div class="properties-section" *ngIf="agent.properties && agent.properties.length > 0">
+        <h3>Agent Properties ({{ agent.properties.length }})</h3>
+        <div class="properties-grid">
+            <div class="prop-card" *ngFor="let prop of agent.properties">
+                <img [src]="prop.imageUrl || 'assets/no-property.jpg'" alt="Property image">
+                <div class="prop-info">
+                    <h4>{{ prop.title }}</h4>
+                    <p class="location">{{ prop.location }}</p>
+                    <p class="price">{{ prop.price | currency }}</p>
+                    <span class="badge" [class.sold]="prop.status === 'Sold' || prop.status === 'Rented'">
+                        {{ prop.status }}
+                    </span>
+                    <a [routerLink]="['/admin/properties/edit', prop._id]" class="btn-edit-link">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="properties-section" *ngIf="!agent.properties || agent.properties.length === 0">
         <h3>Agent Properties</h3>
-        <p class="text-muted">Properties listing for this agent would appear here.</p>
-        <!-- Require new API call filter properties by owner -->
+        <p class="text-muted">No properties found for this agent.</p>
     </div>
 
 </div>

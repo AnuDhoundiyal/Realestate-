@@ -71,6 +71,11 @@
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s;
+        
+        &.blurred {
+            filter: blur(4px) grayscale(0.5);
+            opacity: 0.8;
+        }
     }
 
     .status-badge {
@@ -84,13 +89,36 @@
         font-size: 0.8rem;
         font-weight: 600;
         backdrop-filter: blur(4px);
+        z-index: 6;
 
         &.active {
             background: rgba(16, 185, 129, 0.85);
         }
 
-        &.sold {
+        &.sold, &.rented {
             background: rgba(239, 68, 68, 0.85);
+        }
+    }
+
+    .sold-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+
+        span {
+            background: rgba(255,255,255,0.9);
+            color: var(--text-main);
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-md);
+            transform: rotate(-5deg);
         }
     }
 }

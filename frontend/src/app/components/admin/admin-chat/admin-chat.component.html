@@ -14,11 +14,16 @@
             </div>
             <div class="list-items">
                 <div *ngFor="let chat of conversations" class="user-item"
-                    [class.active]="selectedUser?._id === chat._id" (click)="selectConversation(chat)">
-                    <div class="avatar">{{ chat.otherUser.name.charAt(0) }}</div>
+                    [class.active]="selectedUser?._id === chat._id" 
+                    [class.unread]="chat.unreadCount > 0"
+                    (click)="selectConversation(chat)">
+                    <div class="avatar">{{ chat.otherUser?.name?.charAt(0) || 'U' }}</div>
                     <div class="info">
-                        <span class="name">{{ chat.otherUser.name }}</span>
-                        <span class="role">{{ chat.otherUser.role }}</span>
+                        <div class="name-row">
+                            <span class="name">{{ chat.otherUser?.name || 'Unknown User' }}</span>
+                            <span class="unread-badge-chat" *ngIf="chat.unreadCount > 0">{{ chat.unreadCount }}</span>
+                        </div>
+                        <span class="role">{{ chat.otherUser?.role || 'user' }}</span>
                         <div class="last-msg" *ngIf="chat.lastMessage">{{ chat.lastMessage.content | slice:0:20 }}...
                         </div>
                     </div>
@@ -38,10 +43,10 @@
     <div class="chat-area" *ngIf="activeTab === 'messages'">
         <div *ngIf="selectedUser; else noSelection" class="chat-content">
             <div class="chat-header">
-                <div class="avatar">{{ selectedUser.otherUser.name.charAt(0) }}</div>
+                <div class="avatar">{{ selectedUser.otherUser?.name?.charAt(0) || 'U' }}</div>
                 <div class="header-info">
-                    <h3>{{ selectedUser.otherUser.name }}</h3>
-                    <span>{{ selectedUser.otherUser.email }}</span>
+                    <h3>{{ selectedUser.otherUser?.name || 'Unknown User' }}</h3>
+                    <span>{{ selectedUser.otherUser?.email || 'unknown@example.com' }}</span>
                 </div>
             </div>
 

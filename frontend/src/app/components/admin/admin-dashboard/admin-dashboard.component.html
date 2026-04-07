@@ -33,7 +33,7 @@
         <!-- Bar Chart (Property Categories) -->
         <div class="chart-card growth-card">
             <div class="chart-header">
-                <h3>Property Categories</h3>
+                <h3>Top Saved Properties</h3>
             </div>
             <div class="bar-chart-container">
                 <div class="bar-group" *ngFor="let item of barChartData">
@@ -45,16 +45,21 @@
 
         <!-- Donut Chart (Property Status) -->
         <div class="chart-card pie-card">
-            <h3>Property Status</h3>
+            <h3>Wishlist by Property Type</h3>
 
-            <div class="pie-chart-container" [style.background]="'conic-gradient(' + getGradientString() + ')'">
+            <div class="pie-chart-container" [style.background]="'conic-gradient(' + getGradientString() + ')'"
+                *ngIf="totalSaves > 0; else noSaves">
                 <div class="chart-center-text">
-                    <span class="total-number">{{ stats.properties.total }}</span>
-                    <span class="total-label">Total</span>
+                    <span class="total-number">{{ totalSaves }}</span>
+                    <span class="total-label">Total Saves</span>
                 </div>
             </div>
 
-            <div class="chart-legend">
+            <ng-template #noSaves>
+                <div class="empty-state">No wishlist data available.</div>
+            </ng-template>
+
+            <div class="chart-legend" *ngIf="totalSaves > 0">
                 <div class="legend-item" *ngFor="let seg of pieSegments">
                     <span class="dot" [style.background]="seg.color"></span>
                     <span class="text">{{ seg.label }} <span style="opacity: 0.6">({{ seg.count }})</span></span>

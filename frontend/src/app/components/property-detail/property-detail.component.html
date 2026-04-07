@@ -114,12 +114,18 @@
                 </div>
 
                 <div class="contact-actions">
-                    <button class="btn-primary" (click)="contactAgent()" [disabled]="!authService.isAuthenticated()">
-                        <i class="fas fa-comment-alt"></i> Chat with Agent
+                    <button *ngIf="authService.isAuthenticated()" class="btn-primary" (click)="contactAgent()" [disabled]="property.status !== 'Active'">
+                        <i class="fas fa-comment-alt"></i> 
+                        <span *ngIf="property.status === 'Active'">Chat with {{ property.owner?.role === 'admin' ? 'Admin' : 'Agent' }}</span>
+                        <span *ngIf="property.status !== 'Active'">Property {{ property.status }}</span>
                     </button>
-                    <p class="note" *ngIf="!authService.isAuthenticated()">
-                        <a routerLink="/login" style="color: var(--primary-color);">Log in</a> to contact agent
-                    </p>
+                    <p class="status-note" *ngIf="property.status !== 'Active'">This property is no longer available for contact.</p>
+
+                    <button *ngIf="!authService.isAuthenticated() && property.status === 'Active'" class="btn-primary" [routerLink]="['/login']"
+                        [queryParams]="{ returnUrl: '/properties/' + property._id }">
+                        <i class="fas fa-sign-in-alt"></i> Log in to chat with {{ property.owner?.role === 'admin' ?
+                        'Admin' : 'Agent' }}
+                    </button>
                 </div>
             </div>
         </div>

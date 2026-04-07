@@ -26,14 +26,20 @@ router.get('/conversations', auth, async (req, res) => {
             .sort({ _id: -1 });
 
         // Filter out self from participants for frontend convenience
-        const result = populatedChats.map(chat => {
+        const result = await Promise.all(populatedChats.map(async chat => {
             const otherUser = chat.participants.find(p => p._id.toString() !== req.user.id);
+            const unreadCount = await Message.countDocuments({
+                chatId: chat._id,
+                recipient: req.user.id,
+                read: false
+            });
             return {
                 _id: chat._id,
                 otherUser,
-                lastMessage: chat.lastMessage
+                lastMessage: chat.lastMessage,
+                unreadCount
             };
-        });
+        }));
 
         res.json(result);
     } catch (err) {
@@ -299,11 +305,11 @@ router.get('/unread-count', auth, async (req, res) => {
         // Better: I will verify Message schema in a separate step or right now.
         // I will write the query assuming 'read' defaults to false.
 
-        const count = await Message.countDocuments({
+        const unreadChats = await Message.distinct('chatId', {
             recipient: req.user.id,
             read: false
         });
-        res.json({ count });
+        res.json({ count: unreadChats.length });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });

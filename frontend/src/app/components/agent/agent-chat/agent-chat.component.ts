@@ -54,7 +54,11 @@ export class AgentChatComponent implements OnInit {
 
   loadConversations(autoSelectUserId?: string) {
     this.chatService.getConversations().subscribe(res => {
-      this.conversations = res;
+      this.conversations = res.sort((a: any, b: any) => {
+        if (a.unreadCount > 0 && b.unreadCount === 0) return -1;
+        if (a.unreadCount === 0 && b.unreadCount > 0) return 1;
+        return 0;
+      });
       if (autoSelectUserId) {
         const chat = this.conversations.find(c => c.otherUser._id === autoSelectUserId);
         if (chat) {
@@ -67,6 +71,13 @@ export class AgentChatComponent implements OnInit {
 
   selectUser(chat: any) {
     this.selectedUser = chat;
+    if (chat.unreadCount > 0) {
+      this.chatService.markAsRead(chat._id).subscribe({
+          next: () => {
+              chat.unreadCount = 0;
+          }
+      });
+  }
     this.loadMessages();
   }
 

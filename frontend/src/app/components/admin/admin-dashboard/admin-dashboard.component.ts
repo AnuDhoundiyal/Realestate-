@@ -16,6 +16,7 @@ export class AdminDashboardComponent implements OnInit {
 
     pieSegments: any[] = [];
     barChartData: any[] = [];
+    totalSaves: number = 0;
 
     ngOnInit() {
         this.adminService.getDashboardStats().subscribe({
@@ -37,74 +38,48 @@ export class AdminDashboardComponent implements OnInit {
         return (count / total) * 100;
     }
 
-    // Pie Chart: Property Statuses (Active, Sold, Rented)
+    // Pie Chart: Wishlists by Property Type
     prepareStatusChart() {
-        if (!this.stats?.properties) return;
+        if (!this.stats?.properties?.wishlistByType) return;
 
-        // Mocking detailed status counts if backend doesn't provide them explicitly as a summary object
-        // Assuming backend response structure might need adjustment or we use mock for now if 'byType' is all we have.
-        // Actually detailed status counts are usually needed. 
-        // Based on previous code, we only saw 'byType'. 
-        // Let's deduce if we can, or just use what we have. 
-        // The previous code used 'byType' for the pie chart.
-        // User wants "Property Categories" chart to show "Property by Category" (Apartment, House etc) -> Use Bar Chart for this.
-        // User wants "User Growth" to be "Property by Category".
-        // And "Property Categories" chart (Donut) to change color of "Sale".
+        this.totalSaves = this.stats.properties.wishlistByType.reduce((sum: number, item: any) => sum + item.count, 0);
+        if (this.totalSaves === 0) return;
 
-        // INTERPRETATION CORRECTION:
-        // 1. "User Growth" Chart -> Change to "Property by Category" (Bar Chart showing Apartment, House, etc.)
-        // 2. "Property Categories" Chart -> Change to something else or keep it but change "Sale" color?
-        // Wait, "change the color of the sale in the Property Categories chart". 
-        // If "Property Categories" chart (Donut) is kept, but maybe the user means "Property Status" (Sale vs Rent)?
-        // Or maybe "Property Categories" means "Residential, Commercial"?
-
-        // Let's implement:
-        // 1. Donut Chart: Property Status (Active, Sold, Rented) or "Type" if that's what user meant by "Sale" color.
-        //    Actually, "Sale" usually implies "For Sale" vs "For Rent". 
-        //    Let's assume the Donut Chart is now "Property Status" distributions.
-        // 2. Bar Chart: "Property by Category" (Apartment, Villa, House).
-
-        // We need data. 'stats.properties.byType' gives categories. We can use that for Bar Chart.
-        // We probably don't have status counts in 'stats'. Let's synthesize or use mock for Status Distribution.
-
-        const total = this.stats.properties.total;
-
-        // Mock Status Data until backend sends it
-        // Or calculate if we had list. We only have aggregate.
-        const statuses = [
-            { label: 'Active', count: Math.floor(total * 0.6), color: '#10b981' }, // Green
-            { label: 'Sold', count: Math.floor(total * 0.25), color: '#D7C29E' }, // Gold (User requested change color of 'sale'? maybe sold?)
-            { label: 'Rented', count: total - Math.floor(total * 0.6) - Math.floor(total * 0.25), color: '#3b82f6' } // Blue
-        ];
+        const colors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e'];
 
         let cumulativePercent = 0;
-        this.pieSegments = statuses.map((s, index) => {
-            const percent = s.count / total;
+        this.pieSegments = this.stats.properties.wishlistByType.map((s: any, i: number) => {
+            const percent = s.count / this.totalSaves;
             const startStr = `${cumulativePercent * 100}%`;
             cumulativePercent += percent;
             const endStr = `${cumulativePercent * 100}%`;
 
+            const color = colors[i % colors.length];
+
             return {
-                label: s.label,
+                label: s._id || 'Unknown',
                 count: s.count,
-                color: s.color,
-                gradient: `${s.color} ${startStr} ${endStr}`
+                color: color,
+                gradient: `${color} ${startStr} ${endStr}`
             };
         });
     }
 
-    // Bar Chart: Property Categories (Apartment, House, etc.)
+    // Bar Chart: Top Viewed Properties vs Saves
     prepareCategoryChart() {
-        if (!this.stats?.properties?.byType) return;
+        if (!this.stats?.properties?.topInterested) return;
 
-        const types = this.stats.properties.byType; // [{_id: 'Apartment', count: 5}, ...]
-        const max = Math.max(...types.map((t: any) => t.count), 1);
+        const topInterested = this.stats.properties.topInterested;
+        if (topInterested.length === 0) return;
 
-        this.barChartData = types.map((t: any) => {
+        const max = Math.max(...topInterested.map((t: any) => t.views), ...topInterested.map((t: any) => t.saves), 1);
+
+        this.barChartData = topInterested.map((t: any) => {
+            const displayTitle = t.title.substring(0, 15) + (t.title.length > 15 ? '...' : '');
             return {
-                label: t._id,
-                value: t.count,
-                height: (t.count / max) * 100,
+                label: displayTitle,
+                value: `${t.views} Views | ${t.saves} Saves`,
+                height: (t.views / max) * 100, // Primary height dictates bar size
                 color: 'var(--primary-color)'
             };
         });

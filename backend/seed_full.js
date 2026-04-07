@@ -61,6 +61,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/realestate')
 
         const agentUser = createdUsers.find(u => u.role === 'agent');
         const adminUser = createdUsers.find(u => u.role === 'admin');
+        const normalUser = createdUsers.find(u => u.role === 'user');
 
         // Create Properties
         const properties = [
@@ -79,7 +80,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/realestate')
                 bedrooms: 5,
                 bathrooms: 4,
                 area: 4500,
-                owner: agentUser._id
+                owner: agentUser._id,
+                category: "Villa"
             },
             {
                 title: "Modern Apartment in Downtown",
@@ -92,7 +94,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/realestate')
                 bedrooms: 2,
                 bathrooms: 2,
                 area: 1200,
-                owner: agentUser._id
+                owner: agentUser._id,
+                category: "Apartment"
             },
             {
                 title: "Cozy Cottage",
@@ -105,12 +108,30 @@ mongoose.connect('mongodb://127.0.0.1:27017/realestate')
                 bedrooms: 3,
                 bathrooms: 2,
                 area: 1800,
-                owner: adminUser._id
+                owner: adminUser._id,
+                category: "Cottage"
             }
         ];
 
-        await Property.insertMany(properties);
+        const insertedProperties = await Property.insertMany(properties);
         console.log('Properties Seeded');
+
+        // Add some saves/views so the dashboard charts are populated
+        normalUser.savedProperties = [insertedProperties[0]._id, insertedProperties[1]._id];
+        normalUser.viewedProperties = [
+            { propertyId: insertedProperties[0]._id, viewedAt: new Date() },
+            { propertyId: insertedProperties[1]._id, viewedAt: new Date() },
+            { propertyId: insertedProperties[2]._id, viewedAt: new Date() }
+        ];
+        await normalUser.save();
+
+        // Let admin view a property
+        adminUser.viewedProperties = [
+            { propertyId: insertedProperties[0]._id, viewedAt: new Date() }
+        ];
+        await adminUser.save();
+
+        console.log('User Interactions Seeded');
         mongoose.connection.close();
     })
     .catch(err => {

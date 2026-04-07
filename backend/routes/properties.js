@@ -5,7 +5,9 @@ const Property = require('../models/Property');
 // GET all properties
 router.get('/', async (req, res) => {
     try {
-        const properties = await Property.find();
+        const properties = await Property.find({ 
+            status: 'Active'
+        });
         res.json(properties);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -18,6 +20,17 @@ router.get('/:id', async (req, res) => {
         const property = await Property.findById(req.params.id).populate('owner', 'name email phone role');
         if (!property) return res.status(404).json({ message: 'Property not found' });
         res.json(property);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Increment property view count (Public)
+router.post('/:id/view', async (req, res) => {
+    try {
+        const property = await Property.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }, { new: true });
+        if (!property) return res.status(404).json({ message: 'Property not found' });
+        res.json({ views: property.views });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

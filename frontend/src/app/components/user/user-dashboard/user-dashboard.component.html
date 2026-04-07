@@ -76,7 +76,7 @@
                         [routerLink]="['/properties', prop._id]">
                         <div class="card-img">
                             <img [src]="prop.imageUrl || 'assets/placeholder.jpg'" alt="Property">
-                            <span class="status-badge" [class.sold]="prop.status === 'Sold'">{{prop.status}}</span>
+                            <span class="status-badge" [class.sold]="prop.status === 'Sold' || prop.status === 'Rented'">{{prop.status}}</span>
                         </div>
                         <div class="card-info">
                             <h4>{{prop.title}}</h4>
@@ -97,10 +97,27 @@
                 <div class="section-header">
                     <h3>Recommended for You</h3>
                 </div>
-                <div class="empty-state-small">
-                    <i class="fas fa-magic"></i>
-                    <p>We're learning your preferences. Save more properties to see recommendations!</p>
+                <div class="cards-grid-mini" *ngIf="data.recommendedProperties?.length; else noRecommendations">
+                    <div class="prop-card-mini" *ngFor="let prop of data.recommendedProperties"
+                        [routerLink]="['/properties', prop._id]">
+                        <div class="card-img">
+                            <img [src]="prop.imageUrl || 'assets/placeholder.jpg'" alt="Property">
+                            <span class="status-badge" [class.sold]="prop.status === 'Sold' || prop.status === 'Rented'">{{prop.status}}</span>
+                        </div>
+                        <div class="card-info">
+                            <h4>{{prop.title}}</h4>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> {{prop.location}}</p>
+                            <p class="price">{{prop.price | currency}}</p>
+                        </div>
+                    </div>
                 </div>
+
+                <ng-template #noRecommendations>
+                    <div class="empty-state-small">
+                        <i class="fas fa-magic"></i>
+                        <p>We're learning your preferences. Save more properties to see recommendations!</p>
+                    </div>
+                </ng-template>
             </div>
         </div>
 

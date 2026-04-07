@@ -445,7 +445,21 @@
         opacity: 0.7;
         cursor: not-allowed;
         transform: none;
+        background: #94a3b8;
+        box-shadow: none;
     }
+}
+
+.status-note {
+    font-size: 0.95rem;
+    color: #ef4444;
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: 700;
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.05);
+    border-radius: 8px;
+    border: 1px dashed rgba(239, 68, 68, 0.2);
 }
 
 .note {

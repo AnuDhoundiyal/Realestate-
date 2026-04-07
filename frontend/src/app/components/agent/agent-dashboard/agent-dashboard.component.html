@@ -41,28 +41,37 @@
 
     <!-- Charts Grid -->
     <div class="charts-grid">
-        <div class="chart-card">
-            <h3>Monthly Listing Activity</h3>
-            <div class="chart-content">
-                <!-- Simple CSS Bar Chart Mockup -->
-                <div class="bar" style="height: 40%" title="Jul"></div>
-                <div class="bar" style="height: 65%" title="Aug"></div>
-                <div class="bar" style="height: 50%" title="Sep"></div>
-                <div class="bar" style="height: 85%" title="Oct"></div>
-                <div class="bar" style="height: 70%" title="Nov"></div>
-                <div class="bar" style="height: 90%" title="Dec"></div>
+        <div class="chart-card growth-card">
+            <div class="chart-header">
+                <h3>Top Interested Properties</h3>
+            </div>
+            <div class="bar-chart-container">
+                <div class="bar-group" *ngFor="let item of barChartData">
+                    <div class="bar" [style.height.%]="item.height" [attr.data-value]="item.value"></div>
+                    <span class="label">{{ item.label }}</span>
+                </div>
+                <div class="empty-state" *ngIf="!barChartData.length">No liked properties yet.</div>
             </div>
         </div>
 
-        <div class="chart-card">
-            <h3>Portfolio Categories</h3>
-            <div class="donut-container">
-                <div class="donut"
-                    style="background: conic-gradient(var(--primary-color) 0% 60%, var(--background-color) 60% 100%);">
+        <div class="chart-card pie-card">
+            <h3>Wishlist by Property Type</h3>
+            <div class="pie-chart-container" [style.background]="'conic-gradient(' + getGradientString() + ')'"
+                *ngIf="totalSaves > 0; else noSaves">
+                <div class="chart-center-text">
+                    <span class="total-number">{{ totalSaves }}</span>
+                    <span class="total-label">Total Saves</span>
                 </div>
-                <div class="center-text">
-                    <span>{{ stats.properties.total }}</span>
-                    <label>Properties</label>
+            </div>
+
+            <ng-template #noSaves>
+                <div class="empty-state">No wishlist data available.</div>
+            </ng-template>
+
+            <div class="chart-legend" *ngIf="totalSaves > 0">
+                <div class="legend-item" *ngFor="let seg of pieSegments">
+                    <span class="dot" [style.background]="seg.color"></span>
+                    <span class="text">{{ seg.label }} <span style="opacity: 0.6">({{ seg.count }})</span></span>
                 </div>
             </div>
         </div>

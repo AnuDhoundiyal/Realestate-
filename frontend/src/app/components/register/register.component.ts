@@ -19,6 +19,7 @@ export class RegisterComponent {
   name = '';
   email = '';
   password = '';
+  confirmPassword = '';
   role = 'user';
   phone = '';
   selectedFile: File | null = null;
@@ -35,6 +36,34 @@ export class RegisterComponent {
 
   register() {
     this.errorMessage = '';
+
+    // Simple Validation
+    if (!this.name.trim() || !this.email.trim() || !this.password.trim()) {
+      this.errorMessage = 'Please fill in all required fields.';
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.errorMessage = 'Please enter a valid email address.';
+      return;
+    }
+
+    if (this.password.length < 8) {
+      this.errorMessage = 'Password must be at least 8 characters long.';
+      return;
+    }
+
+    if (this.password !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match.';
+      return;
+    }
+
+    if (this.role === 'agent' && (!this.phone || !this.phone.trim())) {
+      this.errorMessage = 'Phone number is required for agents.';
+      return;
+    }
+
     const formData = new FormData();
     formData.append('name', this.name);
     formData.append('email', this.email);

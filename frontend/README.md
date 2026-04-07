@@ -1,37 +1,94 @@
-# Frontend
+# Real Estate Management System (MEAN Stack)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+A premium, modern real estate platform built with the **MEAN Stack** (MongoDB, Express, Angular, Node.js). Features include real-time chat, property management, role-based dashboards, and a subscription-based "Pro" model.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🚀 Getting Started
 
-## Code scaffolding
+### 1. Prerequisites
+*   **Node.js**: v18 or higher.
+*   **MongoDB**: Local instance or MongoDB Atlas URI.
+*   **Angular CLI**: `npm install -g @angular/cli`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### 2. Backend Setup
+1.  Navigate to the backend directory:
+    ```bash
+    cd backend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Configure environment:
+    Create a `.env` file in the `backend` folder:
+    ```env
+    MONGO_URI=mongodb://127.0.0.1:27017/realestate
+    JWT_SECRET=your_secret_key
+    PORT=5000
+    ```
+4.  Seed the Database (Optional):
+    ```bash
+    node seed_full.js
+    ```
+5.  Start the Server:
+    ```bash
+    node server.js
+    ```
 
-## Build
+### 3. Frontend Setup
+1.  Navigate to the frontend directory:
+    ```bash
+    cd frontend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start the Development Server:
+    ```bash
+    ng serve
+    ```
+4.  Access the app at: `http://localhost:4200`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+---
 
-## Running unit tests
+## ☁️ Vercel Deployment
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+This project is configured for **Vercel** monorepo deployment.
 
-## Running end-to-end tests
+1.  **Frontend Config**: Ensure `dist/frontend/browser` is the output directory (Standard for Angular 17+).
+2.  **Backend Config**: The backend exports the `app` for serverless execution.
+3.  **Environment Variables**: Add `MONGO_URI` and `JWT_SECRET` in the Vercel Dashboard settings.
+4.  **Deployment**: Push to GitHub or run `vercel` from the root directory.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## 📑 Admin & Role Rights
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The system uses **Role-Based Access Control (RBAC)**:
 
-## Demo Credentials
+| Role | Permissions |
+| :--- | :--- |
+| **Admin** | Full access. Manage users, verify agents, view all properties, and access revenue analytics. |
+| **Agent** | List properties, manage their own inventory, and chat with interested clients. |
+| **Client** | Browse properties, save favorites, and chat with agents. |
 
-You can use the following credentials to log in:
+---
 
-- **Admin**: `admin@example.com` / `admin123`
-- **Agent**: `agent@example.com` / `agent123`
-- **User**: `user@example.com` / `user123`
+## 🔑 Demo Credentials
 
-The "Quick Login" chips on the login page are pre-configured with these credentials.
+*   **Admin**: `admin@example.com` / `admin123`
+*   **Agent**: `agent@example.com` / `agent123`
+*   **User**: `user@example.com` / `user123`
+
+*(Quick login chips are available on the login page for convenience)*
+
+---
+
+## 🛠️ Technology Stack
+*   **Frontend**: Angular 17, Bootstrap, SCSS, RxJS.
+*   **Backend**: Node.js, Express.js.
+*   **Database**: MongoDB (Mongoose).
+*   **Security**: JSON Web Tokens (JWT), Bcrypt hashing.
+*   **File Handling**: Multer (Local/Server storage).

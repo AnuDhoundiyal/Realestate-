@@ -26,12 +26,28 @@
             </div>
 
             <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-control"
+                    placeholder="••••••••" required>
+            </div>
+
+            <div class="form-group">
                 <label>I want to:</label>
                 <select [(ngModel)]="role" name="role" class="form-control">
                     <option value="user">Buy or Rent Properties</option>
                     <option value="agent">List Properties (Agent)</option>
                 </select>
                 <small class="hint">Admins must be added manually.</small>
+            </div>
+
+            <div class="form-group" *ngIf="role === 'agent'">
+                <label>Phone Number *</label>
+                <input type="tel" [(ngModel)]="phone" name="phone" class="form-control" placeholder="+1234567890" required>
+            </div>
+
+            <div class="form-group" *ngIf="role === 'user'">
+                <label>Phone Number (Optional)</label>
+                <input type="tel" [(ngModel)]="phone" name="phone" class="form-control" placeholder="+1234567890">
             </div>
 
             <div class="form-group">

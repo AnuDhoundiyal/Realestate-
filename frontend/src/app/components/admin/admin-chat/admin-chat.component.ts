@@ -40,17 +40,24 @@ export class AdminChatComponent implements OnInit {
 
     loadConversations() {
         this.chatService.getConversations().subscribe((data) => {
-            this.conversations = data;
+            // Sort: Unread first, then by date (Backend already sorts by date, but we force unread to top)
+            this.conversations = data.sort((a: any, b: any) => {
+                if (a.unreadCount > 0 && b.unreadCount === 0) return -1;
+                if (a.unreadCount === 0 && b.unreadCount > 0) return 1;
+                return 0;
+            });
         });
     }
 
     selectConversation(chat: any) {
         this.selectedUser = chat;
-        // Reset unread count logic here if we tracked per chat unread
-        // For now, assume opening chat marks it read (if we implement that)
-        this.chatService.markAsRead(chat._id).subscribe(() => {
-            // Optionally update local badge count or waiting for poll
-        });
+        if (chat.unreadCount > 0) {
+            this.chatService.markAsRead(chat._id).subscribe({
+                next: () => {
+                    chat.unreadCount = 0;
+                }
+            });
+        }
         this.loadMessages();
     }
 

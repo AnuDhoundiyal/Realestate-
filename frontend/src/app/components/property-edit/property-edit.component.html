@@ -1,0 +1,154 @@
+<div class="page-container" *ngIf="property; else loadingTpl">
+    <div class="header">
+        <h1>Edit Property</h1>
+        <p class="subtitle">Modify the details of your property listing</p>
+    </div>
+
+    <div class="form-wrapper card">
+        <form #editForm="ngForm" (ngSubmit)="submit(editForm)">
+            
+            <section class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Property Title*</label>
+                        <input type="text" name="title" [(ngModel)]="property.title" required placeholder="e.g., Luxury 3BHK Penthouse">
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Status</label>
+                        <select name="status" [(ngModel)]="property.status">
+                            <option value="Active">Active</option>
+                            <option value="Sold">Sold</option>
+                            <option value="Rented">Rented</option>
+                            <option value="Hidden">Hidden</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description*</label>
+                    <textarea name="description" [(ngModel)]="property.description" required rows="4" placeholder="Describe the best features of this property..."></textarea>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Price ($)*</label>
+                        <input type="number" name="price" [(ngModel)]="property.price" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Listing Type*</label>
+                        <select name="type" [(ngModel)]="property.type" required>
+                            <option value="Sale">For Sale</option>
+                            <option value="Rent">For Rent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category*</label>
+                        <select name="category" [(ngModel)]="property.category" required>
+                            <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Location & Dimensions</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Location Area*</label>
+                        <input type="text" name="location" [(ngModel)]="property.location" list="locList" required placeholder="City or Neighborhood">
+                        <datalist id="locList">
+                            <option *ngFor="let loc of locations" [value]="loc"></option>
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Area (sq ft)</label>
+                        <input type="number" name="area" [(ngModel)]="property.area" placeholder="e.g., 2500">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" name="bedrooms" [(ngModel)]="property.bedrooms">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" name="bathrooms" [(ngModel)]="property.bathrooms">
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3><i class="fas fa-images"></i> Media Management</h3>
+                
+                <div class="media-toggle">
+                    <button type="button" [class.active]="imageMode === 'upload'" (click)="imageMode = 'upload'">Upload Files</button>
+                    <button type="button" [class.active]="imageMode === 'url'" (click)="imageMode = 'url'">External URL</button>
+                </div>
+
+                <!-- Main Image -->
+                <div class="main-image-group">
+                    <label>Featured Image</label>
+                    <div *ngIf="imageMode === 'upload'" class="upload-container">
+                        <input type="file" (change)="onFileSelected($event)" accept="image/*">
+                        <div class="preview-box" *ngIf="previewUrl">
+                            <img [src]="previewUrl" alt="Main Preview">
+                        </div>
+                    </div>
+                    <div *ngIf="imageMode === 'url'" class="url-input">
+                        <input type="text" name="imageUrl" [(ngModel)]="property.imageUrl" placeholder="Paste image URL here">
+                    </div>
+                </div>
+
+                <!-- Gallery Images -->
+                <div class="gallery-group">
+                    <label>Gallery (Click images to remove existing)</label>
+                    
+                    <div *ngIf="imageMode === 'upload'">
+                        <input type="file" (change)="onGallerySelected($event)" multiple accept="image/*" class="mb-1">
+                        
+                        <div class="gallery-previews">
+                            <!-- Existing from DB -->
+                            <div class="gallery-item existing" *ngFor="let img of existingImages; let i = index" (click)="removeExistingImage(i)">
+                                <img [src]="img">
+                                <span class="remove-overlay"><i class="fas fa-trash"></i></span>
+                            </div>
+                            <!-- Freshly picked -->
+                            <div class="gallery-item new" *ngFor="let preview of galleryPreviews; let i = index" (click)="removeNewGalleryImage(i)">
+                                <img [src]="preview">
+                                <span class="remove-overlay"><i class="fas fa-times"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3><i class="fas fa-concierge-bell"></i> Features & Amenities</h3>
+                <div class="features-grid">
+                    <label *ngFor="let feature of commonFeatures" class="checkbox-label">
+                        <input type="checkbox" [(ngModel)]="selectedCommonFeatures[feature]" [name]="'feat_' + feature">
+                        {{feature}}
+                    </label>
+                </div>
+                <div class="form-group mt-2">
+                    <label>Additional Features (Comma separated)</label>
+                    <input type="text" name="additionalFeatures" [(ngModel)]="additionalFeatures" placeholder="e.g., Rooftop Pool, Smart Lock">
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-save">Save Changes</button>
+                <button type="button" class="btn btn-cancel" (click)="router.navigate([userRole === 'admin' ? '/admin/properties' : '/agent/listings'])">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<ng-template #loadingTpl>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Fetching property data...</p>
+    </div>
+</ng-template>

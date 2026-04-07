@@ -29,6 +29,7 @@
             <a routerLink="/admin/chat" routerLinkActive="active" class="nav-item">
                 <span class="icon">💬</span>
                 <span class="label">Chat</span>
+                <span class="unread-badge" *ngIf="unreadCount > 0 && !router.url.includes('/chat')">{{ unreadCount }}</span>
             </a>
             <a routerLink="/admin/profile" routerLinkActive="active" class="nav-item">
                 <span class="icon">👤</span>

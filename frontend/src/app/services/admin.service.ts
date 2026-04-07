@@ -44,6 +44,14 @@ export class AdminService {
         return this.http.put(`${this.apiUrl}/properties/${id}`, data, this.getHeaders());
     }
 
+    updatePropertyStatus(id: string, status: string): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/properties/${id}/status`, { status }, this.getHeaders());
+    }
+
+    deleteProperty(id: string): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/properties/${id}`, this.getHeaders());
+    }
+
     private getHeaders() {
         const token = localStorage.getItem('token');
         return {

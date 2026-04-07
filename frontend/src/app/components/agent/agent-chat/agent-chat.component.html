@@ -5,11 +5,15 @@
         </div>
         <div class="user-list">
             <div *ngFor="let chat of conversations" class="user-item" [class.active]="selectedUser?._id === chat._id"
+                [class.unread]="chat.unreadCount > 0"
                 (click)="selectUser(chat)">
-                <div class="avatar">{{ chat.otherUser.name.charAt(0) }}</div>
+                <div class="avatar">{{ chat.otherUser?.name?.charAt(0) || 'U' }}</div>
                 <div class="info">
-                    <span class="name">{{ chat.otherUser.name }}</span>
-                    <span class="role">{{ chat.otherUser.role }}</span>
+                    <div class="name-row">
+                        <span class="name">{{ chat.otherUser?.name || 'Unknown User' }}</span>
+                        <span class="unread-badge-chat" *ngIf="chat.unreadCount > 0">{{ chat.unreadCount }}</span>
+                    </div>
+                    <span class="role">{{ chat.otherUser?.role || 'user' }}</span>
                     <div class="last-msg" *ngIf="chat.lastMessage">{{ chat.lastMessage.content }}</div>
                 </div>
             </div>
@@ -22,8 +26,8 @@
 
     <div class="chat-area">
         <div class="chat-header" *ngIf="selectedUser">
-            <h3>{{ selectedUser.otherUser.name }}</h3>
-            <span class="badge">{{ selectedUser.otherUser.role }}</span>
+            <h3>{{ selectedUser.otherUser?.name || 'Unknown User' }}</h3>
+            <span class="badge">{{ selectedUser.otherUser?.role || 'user' }}</span>
         </div>
 
         <div class="chat-messages" id="chat-messages" *ngIf="selectedUser">

@@ -18,4 +18,8 @@ export class PropertyService {
   getProperty(id: string): Observable<Property> {
     return this.http.get<Property>(`${this.apiUrl}/${id}`);
   }
+
+  incrementView(id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/view`, {});
+  }
 }

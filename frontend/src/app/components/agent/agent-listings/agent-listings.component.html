@@ -32,15 +32,25 @@
             </div>
 
             <div class="details">
-                <h3>{{ property.title }}</h3>
-                <p class="price">{{ property.price | currency }}</p>
+                <div *ngIf="editingId !== property._id">
+                    <h3>{{ property.title }}</h3>
+                    <p class="price">{{ property.price | currency }}</p>
+                </div>
+                <div *ngIf="editingId === property._id" class="edit-fields">
+                    <input [(ngModel)]="property.title" (change)="onFieldChange(property._id, 'title', property.title)"
+                        class="edit-input" placeholder="Title">
+                    <input type="number" [(ngModel)]="property.price"
+                        (change)="onFieldChange(property._id, 'price', property.price)" class="edit-input"
+                        placeholder="Price">
+                </div>
+
                 <p class="loc">
                     <i class="fas fa-map-marker-alt"></i> {{ property.location }}
                 </p>
 
                 <div class="meta">
-                    <span class="badge" [class.sold]="property.status === 'Sold'"
-                        [class.active]="property.status === 'Active'" [class.rented]="property.status === 'Rented'">
+                    <span class="badge" [class.sold]="property.status === 'Sold' || property.status === 'Rented'"
+                        [class.active]="property.status === 'Active'">
                         {{ property.status }}
                     </span>
                     <span class="date">{{ property.createdAt | date:'mediumDate' }}</span>
@@ -49,15 +59,23 @@
 
             <!-- Actions -->
             <div class="actions">
-                <a [routerLink]="['/properties', property._id]" class="btn-sm">View</a>
+                <a [routerLink]="['/properties', property._id]" class="btn-sm btn-view">View</a>
+                <a [routerLink]="['/agent/properties/edit', property._id]" class="btn-sm btn-full-edit">Full Edit</a>
+
+                <button (click)="toggleEdit(property._id)" class="btn-sm btn-edit" [class.active-edit]="editingId === property._id">
+                    {{ editingId === property._id ? 'Done' : 'Edit' }}
+                </button>
 
                 <button *ngIf="property.status === 'Active'" (click)="updateStatus(property._id, 'Sold')"
-                    class="btn-sm">Sold</button>
+                    class="btn-sm btn-sold">Sold</button>
                 <button *ngIf="property.status === 'Active'" (click)="updateStatus(property._id, 'Rented')"
-                    class="btn-sm">Rented</button>
-
+                    class="btn-sm btn-rented">Rented</button>
                 <button *ngIf="property.status !== 'Active'" (click)="updateStatus(property._id, 'Active')"
-                    class="btn-sm">Re-List</button>
+                    class="btn-sm btn-relit">Re-List</button>
+
+                <button (click)="deleteProperty(property._id)" class="btn-sm btn-delete">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
         </div>
     </div>

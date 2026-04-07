@@ -31,7 +31,7 @@ router.post('/register', upload.single('image'), async (req, res) => {
             password,
             role: role || 'user',
             phone,
-            profileImage: req.file ? `http://localhost:5000/uploads/${req.file.filename}` : ''
+            profileImage: req.file ? `/uploads/${req.file.filename}` : ''
         });
 
         await newUser.save();

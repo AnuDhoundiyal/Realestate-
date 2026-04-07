@@ -8,9 +8,13 @@
         <div class="property-card" *ngFor="let prop of properties" [routerLink]="['/properties', prop._id]">
             <div class="img-wrapper">
                 <img [src]="prop.imageUrl || 'https://placehold.co/600x400/e2e8f0/1e293b?text=No+Image'"
-                    alt="{{ prop.title }}" class="thumb">
+                    alt="{{ prop.title }}" class="thumb" [class.blurred]="prop.status !== 'Active'">
                 <div class="status-badge" [class.active]="prop.status === 'Active'"
-                    [class.sold]="prop.status === 'Sold'">{{ prop.status }}</div>
+                    [class.sold]="prop.status === 'Sold'" [class.rented]="prop.status === 'Rented'">{{ prop.status }}</div>
+                
+                <div class="sold-overlay" *ngIf="prop.status !== 'Active'">
+                    <span>{{ prop.status }}</span>
+                </div>
             </div>
 
             <div class="content">

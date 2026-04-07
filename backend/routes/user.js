@@ -42,7 +42,7 @@ router.patch('/update', auth, upload.single('image'), async (req, res) => {
             user.billingAddress = billingAddress;
         }
         if (req.file) {
-            user.profileImage = `http://localhost:5000/uploads/${req.file.filename}`;
+            user.profileImage = `/uploads/${req.file.filename}`;
         }
 
         // If updating password, hashing is handled by pre-save hook in model if modified
@@ -112,6 +112,10 @@ router.post('/save/:id', auth, async (req, res) => {
 
         user.savedProperties.push(req.params.id);
         await user.save();
+        
+        // Increment global saves count
+        await Property.findByIdAndUpdate(req.params.id, { $inc: { saves: 1 } });
+
         res.json(user.savedProperties);
     } catch (err) {
         console.error(err);
@@ -129,6 +133,10 @@ router.delete('/save/:id', auth, async (req, res) => {
             id => id.toString() !== req.params.id
         );
         await user.save();
+
+        // Decrement global saves count
+        await Property.findByIdAndUpdate(req.params.id, { $inc: { saves: -1 } });
+
         res.json(user.savedProperties);
     } catch (err) {
         console.error(err);
@@ -167,6 +175,26 @@ router.get('/dashboard-data', auth, async (req, res) => {
             };
         });
 
+        // Generate Recommendations
+        let recommendedProperties = [];
+        const viewedPropObjects = user.viewedProperties.filter(vp => vp.propertyId).map(vp => vp.propertyId);
+        if (viewedPropObjects.length > 0) {
+            const categories = [...new Set(viewedPropObjects.map(p => p.category).filter(c => c))];
+            const types = [...new Set(viewedPropObjects.map(p => p.type).filter(t => t))];
+
+            recommendedProperties = await Property.find({
+                $or: [
+                    { category: { $in: categories } },
+                    { type: { $in: types } }
+                ],
+                _id: { $nin: viewedPropObjects.map(p => p._id) }
+            }).limit(3);
+        }
+
+        if (recommendedProperties.length === 0) {
+            recommendedProperties = await Property.find().limit(3);
+        }
+
         const dashboardData = {
             user: {
                 name: user.name,
@@ -183,7 +211,8 @@ router.get('/dashboard-data', auth, async (req, res) => {
                 .map(vp => ({
                     ...vp.propertyId.toObject(),
                     viewedAt: vp.viewedAt
-                }))
+                })),
+            recommendedProperties
         };
 
         res.json(dashboardData);
@@ -226,6 +255,10 @@ router.post('/track-view/:id', auth, async (req, res) => {
             user.viewedProperties.length = 10;
         }
         await user.save();
+
+        // Increment global views count
+        await Property.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
+
         res.json({ success: true });
     } catch (err) {
         console.error(err);

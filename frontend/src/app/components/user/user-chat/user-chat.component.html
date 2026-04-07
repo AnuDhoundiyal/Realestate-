@@ -6,14 +6,13 @@
         <div class="user-list">
             <div *ngFor="let chat of conversations" class="user-item" [class.active]="selectedChat?._id === chat._id"
                 (click)="selectChat(chat)">
-                <div class="avatar">{{ chat.otherUser.name.charAt(0) | uppercase }}</div>
+                <div class="avatar">{{ chat.otherUser?.name?.charAt(0) | uppercase }}</div>
                 <div class="info">
-                    <span class="name">{{ chat.otherUser.name }}</span>
+                    <span class="name">{{ chat.otherUser?.name || 'Unknown User' }}</span>
                     <span class="last-msg" *ngIf="chat.lastMessage">{{ chat.lastMessage.content | slice:0:30
                         }}...</span>
-                    <!-- Optional: Time of last message could be added here -->
                 </div>
-                <!-- Optional: Unread indicator if backend supports it -->
+                <div class="unread-count-badge" *ngIf="chat.unreadCount > 0">{{ chat.unreadCount }}</div>
             </div>
 
             <div *ngIf="conversations.length === 0 && !loading" class="no-selection">
@@ -30,8 +29,8 @@
 
     <div class="chat-area">
         <div class="chat-header" *ngIf="selectedChat">
-            <h3>{{ selectedChat.otherUser.name }}</h3>
-            <span class="role-badge">{{ selectedChat.otherUser.role }}</span>
+            <h3>{{ selectedChat.otherUser?.name || 'Unknown User' }}</h3>
+            <span class="role-badge">{{ selectedChat.otherUser?.role || 'user' }}</span>
         </div>
 
         <div class="chat-messages" id="chat-messages" *ngIf="selectedChat">

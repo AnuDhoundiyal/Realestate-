@@ -5,14 +5,14 @@ import { Property } from '../../models/property.model';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Fancybox } from '@fancyapps/ui';
 
 @Component({
   selector: 'app-property-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.scss'
 })
@@ -33,12 +33,19 @@ export class PropertyDetailComponent implements OnInit, AfterViewInit, OnDestroy
         this.activeImage = this.property.imageUrl;
       });
 
+      // Track View
       if (this.authService.isAuthenticated()) {
         this.userService.trackView(this.id).subscribe({
           next: () => { },
           error: (err) => console.log('Track view error', err)
         });
         this.checkIfSaved();
+      } else {
+        // Anonymous view increment
+        this.propertyService.incrementView(this.id).subscribe({
+          next: () => { },
+          error: (err) => console.log('Incr view error', err)
+        });
       }
     }
   }

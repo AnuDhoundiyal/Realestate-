@@ -16,6 +16,8 @@ const PropertySchema = new mongoose.Schema({
     status: { type: String, enum: ['Active', 'Sold', 'Rented', 'Hidden'], default: 'Active' },
 
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    views: { type: Number, default: 0 },
+    saves: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
 });
 

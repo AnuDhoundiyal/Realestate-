@@ -15,6 +15,7 @@ const adminAuth = (req, res, next) => {
 // @desc    Get all user plans
 // @access  Public
 router.get('/user', async (req, res) => {
+    console.log('GET /user called');
     try {
         const plans = await Plan.find({ role: 'user', isActive: true });
         res.json(plans);

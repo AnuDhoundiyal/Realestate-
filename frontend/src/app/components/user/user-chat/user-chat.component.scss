@@ -106,6 +106,35 @@
             color: var(--primary-color);
         }
     }
+
+    &.unread {
+        background: rgba(215, 194, 158, 0.1);
+        border-left: 4px solid var(--primary-color);
+
+        .name {
+            font-weight: 900;
+        }
+
+        .last-msg {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+    }
+}
+
+.unread-count-badge {
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
 }
 
 .avatar {

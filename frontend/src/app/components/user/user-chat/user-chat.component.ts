@@ -86,7 +86,11 @@ export class UserChatComponent implements OnInit {
         this.loading = true;
         this.chatService.getConversations().subscribe({
             next: (res) => {
-                this.conversations = res;
+                this.conversations = res.sort((a: any, b: any) => {
+                    if (a.unreadCount > 0 && b.unreadCount === 0) return -1;
+                    if (a.unreadCount === 0 && b.unreadCount > 0) return 1;
+                    return 0;
+                });
                 this.loading = false;
                 if (callback) callback();
             },
@@ -119,6 +123,13 @@ export class UserChatComponent implements OnInit {
 
     selectChat(chat: any) {
         this.selectedChat = chat;
+        if (chat.unreadCount > 0) {
+            this.chatService.markAsRead(chat._id).subscribe({
+                next: () => {
+                    chat.unreadCount = 0;
+                }
+            });
+        }
         this.loadMessages();
     }
 

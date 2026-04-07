@@ -44,6 +44,8 @@ import { PaymentSuccessComponent } from './components/payment/payment-success/pa
 import { adminGuard } from './guards/admin.guard';
 import { authGuard } from './guards/auth.guard';
 
+import { PropertyEditComponent } from './components/property-edit/property-edit.component';
+
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'properties', component: PropertyListComponent },
@@ -94,6 +96,7 @@ export const routes: Routes = [
             { path: 'chat', component: AdminChatComponent },
             { path: 'properties', component: AdminPropertiesComponent },
             { path: 'properties/add', component: AdminAddPropertyComponent },
+            { path: 'properties/edit/:id', component: PropertyEditComponent },
             { path: 'profile', component: AdminProfileComponent }
         ]
     },
@@ -108,6 +111,7 @@ export const routes: Routes = [
             { path: 'dashboard', component: AgentDashboardComponent },
             { path: 'listings', component: AgentListingsComponent },
             { path: 'properties/add', component: AgentAddPropertyComponent },
+            { path: 'properties/edit/:id', component: PropertyEditComponent },
             { path: 'chat', component: AgentChatComponent },
             { path: 'profile', component: AgentProfileComponent },
             { path: 'plan', component: AgentPlanComponent }

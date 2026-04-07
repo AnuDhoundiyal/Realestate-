@@ -30,19 +30,51 @@ router.get('/dashboard-stats', [auth, adminAuth], async (req, res) => {
         const pendingAgents = await User.countDocuments({ role: 'agent', verificationStatus: 'PENDING' });
         const totalProperties = await Property.countDocuments();
 
-        // Group properties by type
-        const propertiesByType = await Property.aggregate([
-            { $group: { _id: "$type", count: { $sum: 1 } } }
-        ]);
+        // Fetch properties with pre-calculated views and saves
+        const allProps = await Property.find({}, '_id title type status views saves');
+        const propMap = {};
+        allProps.forEach(p => {
+            propMap[p._id.toString()] = {
+                title: p.title,
+                type: p.type || 'Other',
+                status: p.status,
+                saves: p.saves || 0,
+                views: p.views || 0
+            };
+        });
 
-        // Group users by plan (active)
-        // Need to lookup plan names, but for simple stats just count ids or populated
-        // This is a bit more complex, let's just get raw counts first
+        // We still fetch users if we need other user-specific metrics, 
+        // but for property popularity we now have direct fields.
+
+        // Group wishlist by property type
+        const wishlistByTypeMap = {};
+        Object.values(propMap).forEach(p => {
+            if (p.saves > 0) {
+                wishlistByTypeMap[p.type] = (wishlistByTypeMap[p.type] || 0) + p.saves;
+            }
+        });
+        const wishlistByType = Object.keys(wishlistByTypeMap).map(k => ({ _id: k, count: wishlistByTypeMap[k] }));
+
+        // Top Interested Properties
+        const topInterested = Object.values(propMap)
+            .filter(p => p.saves > 0 || p.views > 0)
+            .sort((a, b) => b.saves - a.saves || b.views - a.views)
+            .slice(0, 6)
+            .map(p => ({
+                title: p.title,
+                type: p.type,
+                saves: p.saves,
+                views: p.views
+            }));
 
         res.json({
             users: { total: totalUsers },
             agents: { total: totalAgents, verified: verifiedAgents, pending: pendingAgents },
-            properties: { total: totalProperties, byType: propertiesByType }
+            properties: {
+                total: totalProperties,
+                wishlistByType: wishlistByType,
+                topInterested: topInterested
+            }
         });
     } catch (err) {
         console.error(err.message);
@@ -64,13 +96,21 @@ router.get('/users', [auth, adminAuth], async (req, res) => {
 });
 
 // @route   GET api/admin/users/:id
-// @desc    Get user by ID
+// @desc    Get user by ID with their properties
 // @access  Admin
 router.get('/users/:id', [auth, adminAuth], async (req, res) => {
     try {
         const user = await User.findById(req.params.id).populate('plan');
         if (!user) return res.status(404).json({ message: 'User not found' });
-        res.json(user);
+
+        // Fetch properties owned by this user
+        const properties = await Property.find({ owner: req.params.id });
+        
+        // Return user with property list
+        const userData = user.toObject();
+        userData.properties = properties;
+
+        res.json(userData);
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ message: 'Server error' });
@@ -153,7 +193,7 @@ router.post('/properties', [auth, adminAuth, uploadMiddleware], async (req, res)
         // 1. Handle Main Image
         let imageUrl = req.body.imageUrl || '';
         if (req.files && req.files['image'] && req.files['image'].length > 0) {
-            imageUrl = `http://localhost:5000/uploads/${req.files['image'][0].filename}`;
+            imageUrl = `/uploads/${req.files['image'][0].filename}`;
         }
 
         // 2. Handle Gallery Images
@@ -163,7 +203,7 @@ router.post('/properties', [auth, adminAuth, uploadMiddleware], async (req, res)
             images.push(...urls);
         }
         if (req.files && req.files['gallery']) {
-            const fileUrls = req.files['gallery'].map(file => `http://localhost:5000/uploads/${file.filename}`);
+            const fileUrls = req.files['gallery'].map(file => `/uploads/${file.filename}`);
             images.push(...fileUrls);
         }
 
@@ -200,22 +240,90 @@ router.post('/properties', [auth, adminAuth, uploadMiddleware], async (req, res)
 
 // @route   PUT api/admin/properties/:id
 // @desc    Update any property (Admin)
-// @access  Admin
-router.put('/properties/:id', [auth, adminAuth], async (req, res) => {
+router.put('/properties/:id', [auth, adminAuth, uploadMiddleware], async (req, res) => {
     try {
-        const { status, title, price, description } = req.body;
-
         let property = await Property.findById(req.params.id);
         if (!property) return res.status(404).json({ message: 'Property not found' });
 
-        // Admin can update any property
-        if (status) property.status = status;
-        if (title) property.title = title;
-        if (price) property.price = price;
-        if (description) property.description = description;
+        // Handle Images
+        if (req.files && req.files['image'] && req.files['image'].length > 0) {
+            property.imageUrl = `/uploads/${req.files['image'][0].filename}`;
+        } else if (req.body.imageUrl && req.body.imageUrl !== property.imageUrl) {
+            property.imageUrl = req.body.imageUrl;
+        }
+
+        // Handle Gallery
+        let currentImages = property.images || [];
+        if (req.body.existingImages) {
+            const toKeep = JSON.parse(req.body.existingImages);
+            currentImages = toKeep;
+        }
+        
+        if (req.files && req.files['gallery']) {
+            const newFileUrls = req.files['gallery'].map(file => `/uploads/${file.filename}`);
+            currentImages.push(...newFileUrls);
+        }
+        property.images = currentImages;
+
+        // Handle Features
+        let features = req.body.features;
+        if (typeof features === 'string') {
+            features = features.split(',').map(f => f.trim()).filter(f => f);
+            property.features = features;
+        }
+
+        // Simple Fields
+        const fields = ['title', 'description', 'location', 'type', 'category', 'status'];
+        fields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                property[field] = req.body[field];
+            }
+        });
+
+        // Numeric Fields
+        const numFields = ['price', 'bedrooms', 'bathrooms', 'area'];
+        numFields.forEach(field => {
+            if (req.body[field] !== undefined && req.body[field] !== '' && req.body[field] !== 'null') {
+                const val = Number(req.body[field]);
+                if (!isNaN(val)) property[field] = val;
+            }
+        });
 
         await property.save();
         res.json(property);
+    } catch (err) {
+        console.error('Update Error:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+});
+
+// @route   PATCH api/admin/properties/:id/status
+// @desc    Update property status (Admin)
+router.patch('/properties/:id/status', [auth, adminAuth], async (req, res) => {
+    try {
+        const property = await Property.findById(req.params.id);
+        if (!property) return res.status(404).json({ message: 'Property not found' });
+
+        if (req.body.status) {
+            property.status = req.body.status;
+            await property.save();
+        }
+        res.json(property);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// @route   DELETE api/admin/properties/:id
+// @desc    Delete any property (Admin)
+router.delete('/properties/:id', [auth, adminAuth], async (req, res) => {
+    try {
+        const property = await Property.findById(req.params.id);
+        if (!property) return res.status(404).json({ message: 'Property not found' });
+
+        await Property.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Property deleted' });
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ message: 'Server error' });

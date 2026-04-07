@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
+console.log('App created');
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -27,6 +28,8 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/plans', planRoutes);
+console.log('planRoutes type:', typeof planRoutes);
+console.log('Routes mounted');
 const paymentRoutes = require('./routes/payment');
 app.use('/api/payment', paymentRoutes);
 app.use('/api/chat', chatRoutes);
